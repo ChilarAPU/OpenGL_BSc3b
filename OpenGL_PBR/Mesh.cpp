@@ -29,6 +29,7 @@ void Mesh::Draw(Shader& shader, bool bInstanced)
 	unsigned int specularNr = 1;
 	unsigned int opacityNr = 1;
 	unsigned int metallicNr = 1;
+	unsigned int normalNr = 1;
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
 		//Get current texture unit to bind buffer to
@@ -53,6 +54,10 @@ void Mesh::Draw(Shader& shader, bool bInstanced)
 		{
 			number = to_string(metallicNr++);
 		}
+		else if (name == "normal")
+		{
+			number = to_string(normalNr++);
+		}
 
 		if (diffuseNr == 1)
 		{
@@ -69,6 +74,10 @@ void Mesh::Draw(Shader& shader, bool bInstanced)
 		else if (metallicNr == 1)
 		{
 			shader.setInt(("material.metallic"), 0);
+		}
+		else if (normalNr == 1)
+		{
+			shader.setInt(("material.normal"), 0);
 		}
 
 		//Send texture over to fragment shader
@@ -147,6 +156,14 @@ void Mesh::setupMesh()
 	//vertex texture coordinates
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+
+	//vertex tangents
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+
+	//vertex Bitangents
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
 
 	//Unbind VAO to stop accidental calls to buffer
 	glBindVertexArray(0);

@@ -292,6 +292,7 @@ int main() {
 	backpack->setDiffuseDirectory("../textures/swordTextures/Albedo.png");
 	//backpack->setSpecularDirectory("../textures/swordTextures/Metallic.png");
 	backpack->setMetallicDirectory("../textures/swordTextures/Metallic.png");
+	backpack->setNormalDirectory("../textures/swordTextures/Normal.png");
 	//load model into buffers
 	backpack->loadModel("../textures/Katana_export.fbx");
 

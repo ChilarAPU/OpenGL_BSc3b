@@ -51,6 +51,11 @@ void Model::setMetallicDirectory(const string& directory)
 	this->metallicDirectory = directory;
 }
 
+void Model::setNormalDirectory(const string& directory)
+{
+	this->normalDirectory = directory;
+}
+
 unsigned int Model::GetVAO()
 {
 	return meshes.at(0).GetVAO();
@@ -65,7 +70,7 @@ void Model::loadModel(string path)
 {
 	Importer importer;
 	//Force model to load as triangles 
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	//Make sure the passed through model has been read correctly
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -125,6 +130,18 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 			vec.x = mesh->mTextureCoords[0][i].x;
 			vec.y = mesh->mTextureCoords[0][i].y;
 			vertex.TexCoords = vec;
+
+			//calculate incoming tangent and bit-tangent
+			vector.x = mesh->mTangents[i].x;
+			vector.y = mesh->mTangents[i].y;
+			vector.z = mesh->mTangents[i].z;
+			vertex.Tangent = vector;
+
+			//calculate incoming tangent and bit-tangent
+			vector.x = mesh->mBitangents[i].x;
+			vector.y = mesh->mBitangents[i].y;
+			vector.z = mesh->mBitangents[i].z;
+			vertex.Bitangent = vector;
 		} 
 		else
 		{
@@ -188,6 +205,14 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	if (!metallicDirectory.empty())
 	{
 		texture = loadTexture(aiTextureType_METALNESS, metallicDirectory, "metallic");
+		if (texture.bIsNewTexture)
+		{
+			textures.push_back(texture.texture);
+		}
+	}
+	if (!normalDirectory.empty())
+	{
+		texture = loadTexture(aiTextureType_NORMALS, normalDirectory, "normal");
 		if (texture.bIsNewTexture)
 		{
 			textures.push_back(texture.texture);

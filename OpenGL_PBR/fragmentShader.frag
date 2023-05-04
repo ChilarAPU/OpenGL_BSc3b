@@ -10,6 +10,10 @@ in VS_OUT
 	vec3 Normal;
 	vec3 FragPos;
 	vec4 FragPosLightSpace;
+	//vec3 TangentLightPos;
+	//vec3 TangentViewPos;
+	//vec3 TangentFragPos;
+	mat3 TBN;
 } fs_in;
 
 struct Material
@@ -19,6 +23,7 @@ struct Material
 	sampler2D emissive;
 	sampler2D opacity;
 	sampler2D metallic;
+	sampler2D normal;
 	float shininess;
 };
 
@@ -94,9 +99,18 @@ void main()
 {
 
 	//Get normalized normal and direction of fragment from camera
-	vec3 norm = normalize(fs_in.Normal);
+	//vec3 norm = normalize(fs_in.Normal);
 	vec3 viewDir = normalize(viewPos - fs_in.FragPos);
 	vec4 currentValue;
+
+	//Obtain fragment normal from normal map
+	vec3 norm = texture(material.normal, fs_in.texCoord).rgb;
+	//Tranform normal into range [-1, 1]
+	//norm = normalize(norm * 2.0 - 1.0);
+	norm = norm * 2.0 - 1.0;
+	norm = normalize(fs_in.TBN * norm);
+
+	//vec3 viewDir = normalize(fs_in.TangentLightPos - fs_in.TangentFragPos);
 
 	//vec3 ambient;
 	//vec3 diffuse;
@@ -194,6 +208,7 @@ vec3 calculateDirectionalLight(DirLight light, vec3 normal, vec3 viewDir)
 {
 	//vec3 lightDir = normalize(-light.direction); //normalize and invert incoming light direction
 	vec3 lightDir = normalize(lightPos - fs_in.FragPos);
+	//vec3 lightDir = normalize(fs_in.TangentLightPos - fs_in.TangentFragPos);
 	
 	return calculatePhongLighting(lightDir, normal, viewDir, light.ambient, light.diffuse, light.specular);
 }
@@ -201,6 +216,7 @@ vec3 calculateDirectionalLight(DirLight light, vec3 normal, vec3 viewDir)
 vec3 calculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
 	vec3 lightDir = normalize(light.position - fragPos); //Get direction based from position of light source and fragment position
+	//vec3 lightDir = normalize(fs_in.TangentLightPos - fs_in.TangentFragPos);
 	vec3 halfwayDir = normalize(lightDir + viewDir); //get halfway vector to blinn-phong
 
 	//attenuation

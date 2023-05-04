@@ -30,6 +30,7 @@ public:
 	void setSpecularDirectory(const string& directory);
 	void setOpacityDirectory(const string& directory);
 	void setMetallicDirectory(const string& directory);
+	void setNormalDirectory(const string& directory);
 
 	bool bIsInstanced;
 
@@ -46,6 +47,7 @@ private:
 	string specularDirectory;
 	string opacityDirectory;
 	string metallicDirectory;
+	string normalDirectory;
 
 	void processNode(aiNode* node, const aiScene* scene);
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
