@@ -57,6 +57,7 @@
     <None Include="shadowMap.geom" />
     <None Include="gaussianBlur.frag" />
     <None Include="gaussianBlur.vert" />
+    <None Include="PBR.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">

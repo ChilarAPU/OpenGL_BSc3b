@@ -111,6 +111,13 @@ vec3 pointLightColorss[] = {
 	vec3(1.0f,  0.0f, 1.0f)
 };
 
+vec3 lightColors[] = {
+	   vec3(300.0f, 300.0f, 300.0f),
+	   vec3(300.0f, 300.0f, 300.0f),
+	   vec3(300.0f, 300.0f, 300.0f),
+	   vec3(300.0f, 300.0f, 300.0f)
+};
+
 float transparentVertices[] = {
 	// positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
 	0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
@@ -222,6 +229,8 @@ Shader* shadowMapShader;
 
 Shader* blurShader;
 
+Shader* PBRShader;
+
 map<float, vec3> sortedWindows; //Holds a sorted map of window positions so that they can be drawn in the correct order
 
 unsigned int framebuffer; //custom framebuffer delcaration
@@ -273,6 +282,8 @@ int main() {
 
 	blurShader = new Shader("gaussianBlur.vert", "gaussianBlur.frag");
 
+	PBRShader = new Shader("vertexShader.vert", "PBR.frag");
+
 	//temp FPS calc
 	float time = 1.f; //Time to delay for
 
@@ -290,7 +301,7 @@ int main() {
 	Model* backpack = new Model();
 	//load model textures
 	backpack->setDiffuseDirectory("../textures/swordTextures/Albedo.png");
-	//backpack->setSpecularDirectory("../textures/swordTextures/Metallic.png");
+	backpack->setRoughnessDirectory("../textures/swordTextures/Roughness.png");
 	backpack->setMetallicDirectory("../textures/swordTextures/Metallic.png");
 	backpack->setNormalDirectory("../textures/swordTextures/Normal.png");
 	//load model into buffers
@@ -718,7 +729,8 @@ int main() {
 		//glBindTexture(GL_TEXTURE_2D, shadowMap);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 		currentShader.setInt("shadowMapCube", 5);
-		display(currentShader, *backpack);
+		//display(currentShader, *backpack);
+		display(*PBRShader, *backpack);
 
 		//Blit multisampled frameburffer to default framebuffer
 		//glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
@@ -875,6 +887,12 @@ void display(Shader shaderToUse, Model m)
 	shaderToUse.setBool("bIsTransparent", false);
 	//glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 	glBindVertexArray(VAO);
+
+	for (int i = 0; i < 4; i++)
+	{
+		shaderToUse.setVec3("lightPositions[" + to_string(i) + "]", pointLightPositions[i]);
+		shaderToUse.setVec3("lightColors[" + to_string(i) + "]", pointLightColorss[i]);
+	}
 
 	//pass through view and projection matrix to shader
 

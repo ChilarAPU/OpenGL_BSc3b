@@ -26,7 +26,7 @@ void Mesh::Draw(Shader& shader, bool bInstanced)
 		IN ORDER FOR IT TO WORK
 	*/
 	unsigned int diffuseNr = 1;
-	unsigned int specularNr = 1;
+	unsigned int roughnessNr = 1;
 	unsigned int opacityNr = 1;
 	unsigned int metallicNr = 1;
 	unsigned int normalNr = 1;
@@ -42,9 +42,9 @@ void Mesh::Draw(Shader& shader, bool bInstanced)
 		{
 			number = to_string(diffuseNr++);
 		}
-		else if (name == "specular")
+		else if (name == "roughness")
 		{
-			number = to_string(specularNr++);
+			number = to_string(roughnessNr++);
 		}
 		else if (name == "opacity")
 		{
@@ -63,9 +63,9 @@ void Mesh::Draw(Shader& shader, bool bInstanced)
 		{
 			shader.setInt(("material.diffuse"), 0);
 		}
-		else if (specularNr == 1)
+		else if (roughnessNr == 1)
 		{
-			shader.setInt(("material.specular"), 0);
+			shader.setInt(("material.roughness"), 0);
 		}
 		else if (opacityNr == 1)
 		{

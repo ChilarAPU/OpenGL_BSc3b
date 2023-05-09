@@ -27,7 +27,7 @@ public:
 	void loadModel(string path);
 
 	void setDiffuseDirectory(const string& directory);
-	void setSpecularDirectory(const string& directory);
+	void setRoughnessDirectory(const string& directory);
 	void setOpacityDirectory(const string& directory);
 	void setMetallicDirectory(const string& directory);
 	void setNormalDirectory(const string& directory);
@@ -44,7 +44,7 @@ private:
 	string directory;
 
 	string diffuseDirectory;
-	string specularDirectory;
+	string roughnessDirectory;
 	string opacityDirectory;
 	string metallicDirectory;
 	string normalDirectory;

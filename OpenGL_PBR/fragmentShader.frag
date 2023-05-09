@@ -124,7 +124,7 @@ void main()
 		result += calculatePointLight(pointLights[i], norm, fs_in.FragPos, viewDir);
 	}
 	//SpotLights
-	//result += calculateSpotLight(spotLight, norm, FragPos, viewDir);
+	//result += calculateSpotLight(spotLight, norm, fs_in.FragPos, viewDir);
 	//FragColor = vec4(result, 1.0);
 	if (!bIsTransparent)
 	{

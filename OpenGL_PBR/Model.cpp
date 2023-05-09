@@ -36,9 +36,9 @@ void Model::setDiffuseDirectory(const string& directory)
 	this->diffuseDirectory = directory;
 }
 
-void Model::setSpecularDirectory(const string& directory)
+void Model::setRoughnessDirectory(const string& directory)
 {
-	this->specularDirectory = directory;
+	this->roughnessDirectory = directory;
 }
 
 void Model::setOpacityDirectory(const string& directory)
@@ -184,9 +184,9 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		textures.push_back(texture.texture);
 	}
 	//specular
-	if (!specularDirectory.empty())
+	if (!roughnessDirectory.empty())
 	{
-		texture = loadTexture(aiTextureType_SPECULAR, specularDirectory, "specular");
+		texture = loadTexture(aiTextureType_SPECULAR, roughnessDirectory, "roughness");
 			if (texture.bIsNewTexture)
 			{
 			textures.push_back(texture.texture);

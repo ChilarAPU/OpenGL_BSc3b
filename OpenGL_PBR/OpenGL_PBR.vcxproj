@@ -148,6 +148,7 @@
     <None Include="geometryShader.geom" />
     <None Include="lightShader.frag" />
     <None Include="lightShader.vert" />
+    <None Include="PBR.frag" />
     <None Include="screenSpaceShader.frag" />
     <None Include="screenSpaceShader.vert" />
     <None Include="shadowMap.frag" />
