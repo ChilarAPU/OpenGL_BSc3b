@@ -58,6 +58,9 @@
     <None Include="gaussianBlur.frag" />
     <None Include="gaussianBlur.vert" />
     <None Include="PBR.frag" />
+    <None Include="newSkybox.vert" />
+    <None Include="newSkybox.frag" />
+    <None Include="cubemapConvolution.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">

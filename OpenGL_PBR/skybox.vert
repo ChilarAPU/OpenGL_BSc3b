@@ -4,11 +4,7 @@ layout (location = 0) in vec3 aPos;
 out vec3 TexCoords;
 
 uniform mat4 view;
-
-layout (std140) uniform Matrices
-{
-	mat4 projection;  //base allignment of 16 4 times, each with a different alligned offset
-};
+uniform mat4 projection;
 
 void main()
 {

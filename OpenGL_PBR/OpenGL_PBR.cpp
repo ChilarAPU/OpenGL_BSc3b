@@ -35,6 +35,8 @@ void mouseCallback(GLFWwindow* window, double xPosition, double yPosition);
 
 void scrollCallback(GLFWwindow* window, double xOffset, double yOffset);
 
+void loadHDRI(const char* path);
+
 /* Bind cube to passed through VAO*/
 void bindCubeToVAO(unsigned int& vao);
 
@@ -105,17 +107,17 @@ vec3 pointLightPositions[] = {
 };
 
 vec3 pointLightColorss[] = {
-	vec3(1.0f,  0.0f,  0.0f),
+	vec3(0.2f,  0.0f,  0.0f),
 	vec3(0.0f, 1.0f, 0.0f),
 	vec3(0.0f,  0.0f, 1.0f),
 	vec3(1.0f,  0.0f, 1.0f)
 };
 
 vec3 lightColors[] = {
-	   vec3(300.0f, 300.0f, 300.0f),
-	   vec3(300.0f, 300.0f, 300.0f),
-	   vec3(300.0f, 300.0f, 300.0f),
-	   vec3(300.0f, 300.0f, 300.0f)
+	   vec3(1.0, 1.0, 1.0),
+	   vec3(3.0, 3.0, 3.0),
+	   vec3(3.0, 3.0, 3.0),
+	   vec3(3.0, 3.0, 3.0)
 };
 
 float transparentVertices[] = {
@@ -231,6 +233,10 @@ Shader* blurShader;
 
 Shader* PBRShader;
 
+Shader* newSkyboxShader;
+
+Shader* convolutionShader;
+
 map<float, vec3> sortedWindows; //Holds a sorted map of window positions so that they can be drawn in the correct order
 
 unsigned int framebuffer; //custom framebuffer delcaration
@@ -244,6 +250,11 @@ unsigned int colorBuffer;
 
 unsigned int depthCubemap;
 
+unsigned int HDRIMap;
+
+unsigned int captureFBO, captureRBO; //Frambuffers for converting HDRI to cubemap
+unsigned int envCubemap;
+unsigned int irradianceMap;
 
 int main() {
 
@@ -283,6 +294,12 @@ int main() {
 	blurShader = new Shader("gaussianBlur.vert", "gaussianBlur.frag");
 
 	PBRShader = new Shader("vertexShader.vert", "PBR.frag");
+
+	loadHDRI("../textures/skyHDRI.hdr");
+
+	newSkyboxShader = new Shader("newSkybox.vert", "newSkybox.frag");
+
+	convolutionShader = new Shader("newSkybox.vert", "cubemapConvolution.frag");
 
 	//temp FPS calc
 	float time = 1.f; //Time to delay for
@@ -642,6 +659,107 @@ int main() {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongBuffers[i], 0);
 	}
+
+	//convert HDRI to cubemap
+	glGenFramebuffers(1, &captureFBO);
+	glGenRenderbuffers(1, &captureRBO);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512); //allocate storage to renderbuffer
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
+
+	glGenTextures(1, &envCubemap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+	for (int i = 0; i < 6; ++i)
+	{
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//capture 2D texture onto the cubemap faces
+	mat4 captureProjection = perspective(radians(90.0), 1.0, 0.1, 10.0);
+	//Each direction of the cube
+	mat4 captureViews[] =
+	{
+		lookAt(vec3(0.0, 0.0, 0.0),vec3(1.0, 0.0, 0.0), vec3(0.0, -1.0, 0.0)),
+		lookAt(vec3(0.0, 0.0, 0.0),vec3(-1.0, 0.0, 0.0), vec3(0.0, -1.0, 0.0)),
+		lookAt(vec3(0.0, 0.0, 0.0),vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0)),
+		lookAt(vec3(0.0, 0.0, 0.0),vec3(0.0, -1.0, 0.0), vec3(0.0, 0.0, -1.0)),
+		lookAt(vec3(0.0, 0.0, 0.0),vec3(0.0, 0.0, 1.0), vec3(0.0, -1.0, 0.0)),
+		lookAt(vec3(0.0, 0.0, 0.0),vec3(0.0, 0.0, -1.0), vec3(0.0, -1.0, 0.0))
+	};
+
+	skyboxShader->use();
+	skyboxShader->setInt("HDRImap", 0);
+	skyboxShader->setMat4("projection", captureProjection);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, HDRIMap);
+	//Change viewport to size of incoming framebuffer
+	glViewport(0, 0, 512, 512);
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	for (int i = 0; i < 6; ++i)
+	{
+		skyboxShader->setMat4("view", captureViews[i]);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, envCubemap, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glBindVertexArray(skyboxVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//Give new shader access to projection binding
+	newSkyboxShader->use();
+	matrices_index = glGetUniformBlockIndex(normalFaceShader->ID, "Matrices");
+	glUniformBlockBinding(normalFaceShader->ID, matrices_index, 0);
+
+	//Setup irradiance cubemap
+	glGenTextures(1, &irradianceMap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
+	for (int i = 0; i < 6; ++i)
+	{
+		// Store irradiance map at a low resolution
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 32, 32, 0, GL_RGB, GL_FLOAT, nullptr);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//Re-scale the render buffer to now accurately portray the new memory requirements
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
+	//render new cubemap to framebuffer
+	convolutionShader->use();
+	convolutionShader->setInt("skyboxMap", 0);
+	convolutionShader->setMat4("projection", captureProjection);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+
+	glViewport(0, 0, 32, 32);
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	for (int i = 0; i < 6; ++i)
+	{
+		convolutionShader->setMat4("view", captureViews[i]);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glBindVertexArray(skyboxVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	PBRShader->use();
+	PBRShader->setInt("irradianceMap", 7);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
 
 	//Run the window until explicitly told to stop
 	while (!glfwWindowShouldClose(window))  //Check if the window has been instructed to close
@@ -1048,13 +1166,22 @@ void display(Shader shaderToUse, Model m)
 	//Disable culling otherwise skyboxVAO is automatically removed
 	glDisable(GL_CULL_FACE);
 	//glDepthMask(GL_FALSE);
-	skyboxShader->use();
+	/*skyboxShader->use();
 	//Remove translation from the view matrix 
 	mat4 skyboxView = mat4(mat3(view));
 	skyboxShader->setMat4("view", skyboxView);
 	//Draw skybox cube
 	glBindVertexArray(skyboxVAO);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	glBindTexture(GL_TEXTURE_2D, HDRIMap);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDepthMask(GL_TRUE);
+	*/
+	newSkyboxShader->use();
+	mat4 skyboxView = mat4(mat3(view));
+	newSkyboxShader->setMat4("view", skyboxView);
+	glBindVertexArray(skyboxVAO);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthMask(GL_TRUE);
 
@@ -1126,6 +1253,38 @@ void scrollCallback(GLFWwindow* window, double xOffset, double yOffset)
 	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(projection));
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void loadHDRI(const char* path)
+{
+	string filename = string(path);
+	cout << filename << endl;
+	stbi_set_flip_vertically_on_load(true);
+
+	//unsigned int textureID;
+	glGenTextures(1, &HDRIMap);
+
+	int width, height, nrComponents;
+
+	float* data = stbi_loadf(filename.c_str(), &width, &height, &nrComponents, 0);
+	if (data)
+	{
+		glBindTexture(GL_TEXTURE_2D, HDRIMap);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		free(data);
+	}
+	else
+	{
+		std::cout << "Texture failed to load at path: " << path << std::endl;
+		cout << stbi_failure_reason() << endl;
+		free(data);
+	}
 }
 
 void mouseCallback(GLFWwindow* window, double xPosition, double yPosition)

@@ -142,12 +142,15 @@
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cubemapConvolution.frag" />
     <None Include="fragmentShader.frag" />
     <None Include="gaussianBlur.frag" />
     <None Include="gaussianBlur.vert" />
     <None Include="geometryShader.geom" />
     <None Include="lightShader.frag" />
     <None Include="lightShader.vert" />
+    <None Include="newSkybox.frag" />
+    <None Include="newSkybox.vert" />
     <None Include="PBR.frag" />
     <None Include="screenSpaceShader.frag" />
     <None Include="screenSpaceShader.vert" />

@@ -32,6 +32,8 @@ uniform vec3 viewPos;
 uniform vec3 lightPositions[4];
 uniform vec3 lightColors[4];
 
+uniform samplerCube irradianceMap;
+
 //Temp values for PBR testing
 //const vec3 albedo = vec3(0.5f, 0.0f, 0.0f);
 //const float metallic = 0.5;
@@ -41,6 +43,8 @@ const float PI = 3.14159265359;
 
 //Calcucate how much light the current fragment should reflect and how much it should refract
 vec3 fresnelSchlick(float cosTheta, vec3 F0); 
+//Same as fresnelSchlick but inplements a roughness value
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness); 
 float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness); // Geometry Function
 float DistributionGGX(vec3 N, vec3 H, float roughness); //Normal Distribution 
 float GeometrySchlickGGX(float NdotV, float roughness);
@@ -63,28 +67,29 @@ void main()
 	//vec3 N = norm;
 	vec3 V = normalize(viewPos - fs_in.FragPos); //Direction of fragment to player
 
+	//calculate the reflective amount of the current fragment
+	vec3 F0 = vec3(0.04); //default F0 value for non-metallic surfaces
+	F0 = mix(F0, albedo, metallic);
+
 	//Calculate Point Light Radiance
 	vec3 Lo = vec3(0.0);
 	for (int i = 0; i < 4; i++)
 	{
+		//per light radiance
 		vec3 L = normalize(lightPositions[i] - fs_in.FragPos);
 		vec3 H = normalize(V + L);
-
 		float distance = length(lightPositions[i] - fs_in.FragPos);
 		float attenuation = 1.0 / (distance * distance);
 		vec3 radiance = lightColors[i] * attenuation;
 
-		vec3 F0 = vec3(0.04); //default F0 value for non-metallic surfaces
-		F0 = mix(F0, albedo, metallic);
+		//Cook-Torrance BRDF
 		vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
-
 		float NDF = DistributionGGX(N, H, roughness);
 		float G = GeometrySmith(N, V, L, roughness);
 
-		//Cook-Torrance BRDF
 		vec3 numerator = NDF * G * F;
 		float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
-		vec3 specular = numerator + denominator;
+		vec3 specular = numerator / denominator;
 
 		vec3 kS = F; //specular contribution
 		vec3 kD = vec3(1.0) - kS; //diffuse contribution
@@ -95,14 +100,18 @@ void main()
 		Lo += (kD * albedo / PI + specular) * radiance * NdotL;
 	}
 
-	vec3 ambient = vec3(0.03) * albedo * ao;
+	vec3 kS = fresnelSchlick(max(dot(N, V), 0.0), F0);
+	vec3 kD = 1.0 - kS;
+	kD *= 1.0 - metallic;
+	vec3 irradiance = texture(irradianceMap, N).rgb;
+	vec3 diffuse = irradiance * albedo;
+	vec3 ambient = (kD * diffuse) * ao;
 	vec3 color = ambient + Lo;
 
 	//Gamma correction on final output
 	//color = (color + vec3(1.0));
 	//color = pow(color, vec3(1.0/2.2));
 	
-	//FragColor = texture(material.diffuse, fs_in.texCoord);
 	FragColor = vec4(color, 1.0);
 
 	//Setup Bloom gate
@@ -111,6 +120,11 @@ void main()
         BloomColor = FragColor;
     else
         BloomColor = vec4(0.0, 0.0, 0.0, 1.0);
+}
+
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+	return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
 vec3 fresnelSchlick(float cosTheta, vec3 F0)
