@@ -210,6 +210,8 @@ Model* windowModel = new Model();
 
 Model* floorModel = new Model();
 
+Model* swordModel = new Model();
+
 unsigned int fps;
 float frameTime = 0;
 
@@ -237,6 +239,10 @@ Shader* newSkyboxShader;
 
 Shader* convolutionShader;
 
+Shader* filterShader;
+
+Shader* BRDFshader;
+
 map<float, vec3> sortedWindows; //Holds a sorted map of window positions so that they can be drawn in the correct order
 
 unsigned int framebuffer; //custom framebuffer delcaration
@@ -255,6 +261,9 @@ unsigned int HDRIMap;
 unsigned int captureFBO, captureRBO; //Frambuffers for converting HDRI to cubemap
 unsigned int envCubemap;
 unsigned int irradianceMap;
+
+unsigned int prefilterMap;
+unsigned int BRDFLUTtexture;
 
 int main() {
 
@@ -295,11 +304,15 @@ int main() {
 
 	PBRShader = new Shader("vertexShader.vert", "PBR.frag");
 
-	loadHDRI("../textures/skyHDRI.hdr");
+	loadHDRI("../textures/construction.hdr");
 
 	newSkyboxShader = new Shader("newSkybox.vert", "newSkybox.frag");
 
 	convolutionShader = new Shader("newSkybox.vert", "cubemapConvolution.frag");
+
+	filterShader = new Shader("newSkybox.vert", "preFilter.frag");
+
+	BRDFshader = new Shader("gaussianBlur.vert", "BRDF.frag");
 
 	//temp FPS calc
 	float time = 1.f; //Time to delay for
@@ -327,6 +340,12 @@ int main() {
 	floorModel->setDiffuseDirectory("../textures/floor_diffuse.png");
 	floorModel->bIsInstanced = true; //Tell Model class that this should be instanced
 	floorModel->loadModel("../textures/floor.obj");
+
+	swordModel->setDiffuseDirectory("../textures/chevaliar/textures/albedo.jpg");
+	swordModel->setMetallicDirectory("../textures/chevaliar/textures/metallic.jpg");
+	swordModel->setNormalDirectory("../textures/chevaliar/textures/normal.png");
+	swordModel->setRoughnessDirectory("../textures/chevaliar/textures/roughness.jpg");
+	swordModel->loadModel("../textures/chevaliar/model.dae");
 
 	//temporary grass locations
 	vegetation.push_back(vec3(-1.5f, 0.0f, -0.48f));
@@ -604,6 +623,7 @@ int main() {
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	//Omnidirectional shadows using a depth cubemap
 	glGenTextures(1, &depthCubemap);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
@@ -678,7 +698,8 @@ int main() {
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	//capture 2D texture onto the cubemap faces
@@ -712,6 +733,10 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//generate mipmap levels from first face
+	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 	//Give new shader access to projection binding
 	newSkyboxShader->use();
@@ -761,6 +786,91 @@ int main() {
 	glActiveTexture(GL_TEXTURE7);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
 
+	convolutionShader->use();
+	glActiveTexture(GL_TEXTURE8);
+
+	//Pre-Filtering the HDR environment map
+	glGenTextures(1, &prefilterMap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+	for (int i = 0; i < 6; ++i)
+	{
+		//128 x 128 reflection resolution
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); //enable trilinear filtering
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+	//Pre-Filter skybox into mipmap levels
+	filterShader->use();
+	filterShader->setInt("skyboxMap", 0);
+	filterShader->setMat4("projection", captureProjection);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	unsigned int maxMipLevels = 5;
+	for (int mip = 0; mip < maxMipLevels; ++mip)
+	{
+		//resize framebuffer according to mip-level size
+		unsigned int mipWidth = 128 * pow(0.5, mip);
+		unsigned int mipHeight = 128 * pow(0.5, mip);
+		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
+		glViewport(0, 0, mipWidth, mipHeight);
+
+		float roughness = (float)mip / (float)(maxMipLevels - 1);
+		filterShader->setFloat("roughness", roughness);
+		for (int i = 0; i < 6; ++i)
+		{
+			filterShader->setMat4("view", captureViews[i]);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+				prefilterMap, mip);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			glBindVertexArray(skyboxVAO);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//Filter cubemap faces to remove seams around the edges
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
+	//Texture to store BRDF result
+	glGenTextures(1, &BRDFLUTtexture);
+
+	//pre-allocate memory for LUT texture
+	glBindTexture(GL_TEXTURE_2D, BRDFLUTtexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//re-use framebuffer over screen-space quad
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, BRDFLUTtexture, 0);
+
+	glViewport(0, 0, 512, 512);
+	BRDFshader->use();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glBindVertexArray(screenQuadVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	PBRShader->use();
+	glActiveTexture(GL_TEXTURE8);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+	PBRShader->setInt("prefilterMap", 8);
+	glBindTexture(GL_TEXTURE_2D, BRDFLUTtexture);
 	//Run the window until explicitly told to stop
 	while (!glfwWindowShouldClose(window))  //Check if the window has been instructed to close
 	{
@@ -843,10 +953,14 @@ int main() {
 		currentShader.setMat4("lightSpaceMatrix", lightViewMatrix);
 		currentShader.setVec3("lightPos", vec3(1.2f, 1.0f, 2.0f));
 		currentShader.setFloat("far_plane", far);
+		
+		PBRShader->use();
+		//PBRShader->setMat4("lightSpaceMatrix", lightViewMatrix);
+		//PBRShader->setVec3("lightPos", vec3(1.2f, 2.0f, 2.0f));
+		PBRShader->setFloat("far_plane", far);
 		glActiveTexture(GL_TEXTURE5);
-		//glBindTexture(GL_TEXTURE_2D, shadowMap);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-		currentShader.setInt("shadowMapCube", 5);
+		PBRShader->setInt("shadowMapCube", 5);
 		//display(currentShader, *backpack);
 		display(*PBRShader, *backpack);
 
@@ -1079,14 +1193,13 @@ void display(Shader shaderToUse, Model m)
 	shaderToUse.setMat4("model", model);
 	m.Draw(shaderToUse, 1);
 
-	//Draw floor model
-	/*model = mat4(1.0);
-	model = translate(model, vec3(1.0, -2.0, 1.0));
-	model = scale(model, vec3(0.3, 0.3, 0.3));
+	//Draw Second Sword
+	model = mat4(1.0);
+	model = translate(model, vec3(-0.6, 0.0, 0.0));
+	model = rotate(model, (float)radians(90.f), vec3(-1.0f, 0.0, 0.0));
 	shaderToUse.setMat4("model", model);
-	floorModel->Draw(shaderToUse);
-	*/
-
+	swordModel->Draw(shaderToUse);
+	
 	floorModel->Draw(shaderToUse, -1, true);
 
 	//Draw sword again but this time with the geometry normal shader

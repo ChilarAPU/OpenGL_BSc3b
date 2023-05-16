@@ -30,6 +30,7 @@ void Mesh::Draw(Shader& shader, bool bInstanced)
 	unsigned int opacityNr = 1;
 	unsigned int metallicNr = 1;
 	unsigned int normalNr = 1;
+	unsigned int aoNr = 1;
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
 		//Get current texture unit to bind buffer to
@@ -58,26 +59,34 @@ void Mesh::Draw(Shader& shader, bool bInstanced)
 		{
 			number = to_string(normalNr++);
 		}
+		else if (name == "ao")
+		{
+			number = to_string(aoNr++);
+		}
 
 		if (diffuseNr == 1)
 		{
 			shader.setInt(("material.diffuse"), 0);
 		}
-		else if (roughnessNr == 1)
+		if (roughnessNr == 1)
 		{
 			shader.setInt(("material.roughness"), 0);
 		}
-		else if (opacityNr == 1)
+		if (opacityNr == 1)
 		{
 			shader.setInt(("material.opacity"), 0);
 		}
-		else if (metallicNr == 1)
+		if (metallicNr == 1)
 		{
 			shader.setInt(("material.metallic"), 0);
 		}
-		else if (normalNr == 1)
+		if (normalNr == 1)
 		{
 			shader.setInt(("material.normal"), 0);
+		}
+		if (aoNr == 1)
+		{
+			shader.setInt(("material.ao"), 0);
 		}
 
 		//Send texture over to fragment shader

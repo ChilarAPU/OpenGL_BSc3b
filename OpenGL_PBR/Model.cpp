@@ -56,6 +56,11 @@ void Model::setNormalDirectory(const string& directory)
 	this->normalDirectory = directory;
 }
 
+void Model::setAODirectory(const string& directory)
+{
+	this->aoDirectory = directory;
+}
+
 unsigned int Model::GetVAO()
 {
 	return meshes.at(0).GetVAO();
@@ -218,6 +223,15 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 			textures.push_back(texture.texture);
 		}
 	}
+
+	if (!aoDirectory.empty())
+	{
+		texture = loadTexture(aiTextureType_AMBIENT_OCCLUSION, aoDirectory, "ao");
+		if (texture.bIsNewTexture)
+		{
+			textures.push_back(texture.texture);
+		}
+	}
 	
 	return Mesh(vertices, indices, textures, bIsInstanced);
 }
@@ -290,8 +304,8 @@ unsigned int Model::TextureFromFile(const char* path, const string& directory, b
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
 
-	int width, height, nrComponents;
-	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
+	int width = 0, height = 0, nrComponents = 0;
+	unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
 	if (data)
 	{
 		GLenum format;
