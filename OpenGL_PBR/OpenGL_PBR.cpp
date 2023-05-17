@@ -292,29 +292,29 @@ int main() {
 	cubeEmissive->BindTextureToBuffer(GL_TEXTURE2);
 	*/
 
-	Shader currentShader("vertexShader.vert", "fragmentShader.frag");
+	Shader currentShader("shaders/vertexShader.vert", "shaders/fragmentShader.frag");
 	//Bind light shader
-	lightShader = new Shader("lightShader.vert", "lightShader.frag");
+	lightShader = new Shader("shaders/lightShader.vert", "shaders/lightShader.frag");
 
-	screenSpaceShader = new Shader("screenSpaceShader.vert", "screenSpaceShader.frag");
+	screenSpaceShader = new Shader("shaders/screenSpaceShader.vert", "shaders/screenSpaceShader.frag");
 
-	normalFaceShader = new Shader("visibleNormals.vert", "visibleNormals.frag", "geometryShader.geom");
+	normalFaceShader = new Shader("shaders/visibleNormals.vert", "shaders/visibleNormals.frag", "shaders/geometryShader.geom");
 
-	shadowMapShader = new Shader("shadowMap.vert", "shadowMap.frag", "shadowMap.geom");
+	shadowMapShader = new Shader("shaders/shadowMap.vert", "shaders/shadowMap.frag", "shaders/shadowMap.geom");
 
-	blurShader = new Shader("gaussianBlur.vert", "gaussianBlur.frag");
+	blurShader = new Shader("shaders/gaussianBlur.vert", "shaders/gaussianBlur.frag");
 
-	PBRShader = new Shader("vertexShader.vert", "PBR.frag");
+	PBRShader = new Shader("shaders/vertexShader.vert", "shaders/PBR.frag");
 
 	loadHDRI("../textures/construction.hdr");
 
-	newSkyboxShader = new Shader("newSkybox.vert", "newSkybox.frag");
+	newSkyboxShader = new Shader("shaders/newSkybox.vert", "shaders/newSkybox.frag");
 
-	convolutionShader = new Shader("newSkybox.vert", "cubemapConvolution.frag");
+	convolutionShader = new Shader("shaders/newSkybox.vert", "shaders/cubemapConvolution.frag");
 
-	filterShader = new Shader("newSkybox.vert", "preFilter.frag");
+	filterShader = new Shader("shaders/newSkybox.vert", "shaders/preFilter.frag");
 
-	BRDFshader = new Shader("gaussianBlur.vert", "BRDF.frag");
+	BRDFshader = new Shader("shaders/gaussianBlur.vert", "shaders/BRDF.frag");
 
 	//temp FPS calc
 	float time = 1.f; //Time to delay for
@@ -567,7 +567,7 @@ int main() {
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	skyboxShader = new Shader("skybox.vert", "skybox.frag");
+	skyboxShader = new Shader("shaders/skybox.vert", "shaders/skybox.frag");
 	skyboxShader->use();
 	skyboxShader->setInt("skybox", 0);
 
