@@ -128,7 +128,10 @@ void main()
 	float shadow = ShadowCalculation(fs_in.FragPos);
 	vec3 lightingDif = (1.0 - shadow) * diffuse;
 
-	vec3 ambient = (kD * diffuse + specular) * ao;
+	//emissive calculation
+	vec3 emissive = texture(material.emissive, fs_in.texCoord).rgb;
+	
+	vec3 ambient = (kD * diffuse + specular + emissive) * ao;
 	vec3 color = ambient + Lo + lightingDif;
 
 	//Gamma correction on final output
@@ -137,7 +140,7 @@ void main()
 	
 	FragColor = vec4(color, 1.0);
 	//FragColor = vec4(specular.rgb, 1.0);
-	//FragColor = vec4(shadow, 1.0, 1.0, 1.0);
+	//FragColor = vec4(emissive * 5, 1.0);
 
 	//Setup Bloom gate
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));

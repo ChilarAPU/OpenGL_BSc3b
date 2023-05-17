@@ -32,6 +32,7 @@ public:
 	void setMetallicDirectory(const string& directory);
 	void setNormalDirectory(const string& directory);
 	void setAODirectory(const string& directory);
+	void setEmissiveDirectory(const string& directory);
 
 	bool bIsInstanced;
 
@@ -50,6 +51,7 @@ private:
 	string metallicDirectory;
 	string normalDirectory;
 	string aoDirectory;
+	string emissiveDirectory;
 
 	void processNode(aiNode* node, const aiScene* scene);
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);

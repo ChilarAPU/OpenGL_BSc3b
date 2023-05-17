@@ -61,6 +61,11 @@ void Model::setAODirectory(const string& directory)
 	this->aoDirectory = directory;
 }
 
+void Model::setEmissiveDirectory(const string& directory)
+{
+	this->emissiveDirectory = directory;
+}
+
 unsigned int Model::GetVAO()
 {
 	return meshes.at(0).GetVAO();
@@ -147,6 +152,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 			vector.y = mesh->mBitangents[i].y;
 			vector.z = mesh->mBitangents[i].z;
 			vertex.Bitangent = vector;
+
 		} 
 		else
 		{
@@ -227,6 +233,15 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	if (!aoDirectory.empty())
 	{
 		texture = loadTexture(aiTextureType_AMBIENT_OCCLUSION, aoDirectory, "ao");
+		if (texture.bIsNewTexture)
+		{
+			textures.push_back(texture.texture);
+		}
+	}
+
+	if (!emissiveDirectory.empty())
+	{
+		texture = loadTexture(aiTextureType_EMISSIVE, emissiveDirectory, "emissive");
 		if (texture.bIsNewTexture)
 		{
 			textures.push_back(texture.texture);

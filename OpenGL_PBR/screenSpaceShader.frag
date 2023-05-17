@@ -72,13 +72,34 @@ void main()
     }
     FragColor = vec4(col, 1.0);
 
+    //chromatic aberration
+    //serperate x,y and z of the image and displate the red and blue outputs
+    float r = texture(screenTexture, TexCoords - vec2(0.01, 0)).x;
+    float g = col.y;
+    float b =  texture(screenTexture, TexCoords + vec2(0.01, 0)).z;
+
+    vec3 colCA = vec3(r, g, b);
+
+    //vignette effect
+    vec2 uv = TexCoords;
+    uv *= 1.0 - uv.yx;
+    float vig = uv.x*uv.y * 20.0; //intensity
+    vig = pow(vig, 0.25); //extent of the vignette
+
+
     //Shadow map debugging
     //float depthValue = texture(screenTexture, TexCoords).r;
     // FragColor = vec4(vec3(LinearizeDepth(depthValue) / far_plane), 1.0); // perspective
     //FragColor = vec4(vec3(depthValue), 1.0); // orthographic
 
     //HDR mapping to LDR
-    vec3 hdrColor = texture(screenTexture, TexCoords).rgb;
+    vec3 hdrColor = col;
+    //if vignette is below a value of 0.5 (of black to white), enable the chromatic abberation
+    if (vig < 0.5)
+    {
+        hdrColor = colCA;
+    }
+    //otherwise, show normal output colour
     vec3 bloomColor = texture(bloomBlur, TexCoords).rgb;
     hdrColor += bloomColor; //additive blending
 
@@ -88,6 +109,8 @@ void main()
     vec3 mapped = vec3(1.0) - exp(-hdrColor * exposure);
 
     mapped = pow(mapped, vec3(1.0 / gamma));
+
+    mapped *= vig; //multiply final gamma corrected image by the vignette to show it on the screen
 
     FragColor = vec4(mapped, 1.0);
 }

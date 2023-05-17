@@ -212,6 +212,8 @@ Model* floorModel = new Model();
 
 Model* swordModel = new Model();
 
+Model* carModel = new Model();
+
 unsigned int fps;
 float frameTime = 0;
 
@@ -346,6 +348,14 @@ int main() {
 	swordModel->setNormalDirectory("../textures/chevaliar/textures/normal.png");
 	swordModel->setRoughnessDirectory("../textures/chevaliar/textures/roughness.jpg");
 	swordModel->loadModel("../textures/chevaliar/model.dae");
+
+	carModel->setDiffuseDirectory("../textures/carTextures/Vehicle_basecolor.png");
+	carModel->setMetallicDirectory("../textures/carTextures/Vehicle_metallic.png");
+	carModel->setNormalDirectory("../textures/carTextures/Vehicle_normal.png");
+	carModel->setRoughnessDirectory("../textures/carTextures/Vehicle_roughness.png");
+	carModel->setAODirectory("../textures/carTextures/Vehicle_ao.png");
+	carModel->setEmissiveDirectory("../textures/carTextures/Vehicle_emissive.png");
+	carModel->loadModel("../textures/cybercar.fbx");
 
 	//temporary grass locations
 	vegetation.push_back(vec3(-1.5f, 0.0f, -0.48f));
@@ -958,9 +968,9 @@ int main() {
 		//PBRShader->setMat4("lightSpaceMatrix", lightViewMatrix);
 		//PBRShader->setVec3("lightPos", vec3(1.2f, 2.0f, 2.0f));
 		PBRShader->setFloat("far_plane", far);
-		glActiveTexture(GL_TEXTURE5);
+		glActiveTexture(GL_TEXTURE6);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-		PBRShader->setInt("shadowMapCube", 5);
+		PBRShader->setInt("shadowMapCube", 6);
 		//display(currentShader, *backpack);
 		display(*PBRShader, *backpack);
 
@@ -1199,6 +1209,13 @@ void display(Shader shaderToUse, Model m)
 	model = rotate(model, (float)radians(90.f), vec3(-1.0f, 0.0, 0.0));
 	shaderToUse.setMat4("model", model);
 	swordModel->Draw(shaderToUse);
+
+	model = mat4(1.0);
+	model = translate(model, vec3(2.0, -1.8, 0.0));
+	model = scale(model, vec3(0.006, 0.006, 0.006));
+	model = rotate(model, (float)radians(45.f), vec3(0.0f, -1.0, 0.0));
+	shaderToUse.setMat4("model", model);
+	carModel->Draw(shaderToUse);
 	
 	floorModel->Draw(shaderToUse, -1, true);
 

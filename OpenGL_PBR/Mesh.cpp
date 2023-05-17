@@ -31,6 +31,8 @@ void Mesh::Draw(Shader& shader, bool bInstanced)
 	unsigned int metallicNr = 1;
 	unsigned int normalNr = 1;
 	unsigned int aoNr = 1;
+	unsigned int emissiveNr = 1;
+
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
 		//Get current texture unit to bind buffer to
@@ -63,6 +65,10 @@ void Mesh::Draw(Shader& shader, bool bInstanced)
 		{
 			number = to_string(aoNr++);
 		}
+		else if (name == "emissive")
+		{
+			number = to_string(emissiveNr++);
+		}
 
 		if (diffuseNr == 1)
 		{
@@ -87,6 +93,10 @@ void Mesh::Draw(Shader& shader, bool bInstanced)
 		if (aoNr == 1)
 		{
 			shader.setInt(("material.ao"), 0);
+		}
+		if (emissiveNr == 1)
+		{
+			shader.setInt(("material.emissive"), 0);
 		}
 
 		//Send texture over to fragment shader
