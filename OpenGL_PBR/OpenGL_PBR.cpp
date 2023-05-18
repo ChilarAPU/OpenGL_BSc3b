@@ -40,65 +40,6 @@ void loadHDRI(const char* path);
 /* Bind cube to passed through VAO*/
 void bindCubeToVAO(unsigned int& vao);
 
-//temporary place for object buffer data
-float Cubevertices[] = {
-	// Back face
-	   -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-		0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right         
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-	   -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
-	   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-	   // Front face
-	   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-		0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-		0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-	   -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left
-	   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-	   // Left face
-	   -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-	   -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left
-	   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-	   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-	   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-	   -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-	   // Right face
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right         
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-		0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left     
-		// Bottom face
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-		// Top face
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right     
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left       
-};
-
-vec3 cubePositions[] = {
-	glm::vec3(0.0f,  0.0f,  0.0f),
-	glm::vec3(2.0f,  5.0f, -15.0f),
-	glm::vec3(-1.5f, -2.2f, -2.5f),
-	glm::vec3(-3.8f, -2.0f, -12.3f),
-	glm::vec3(2.4f, -0.4f, -3.5f),
-	glm::vec3(-1.7f,  3.0f, -7.5f),
-	glm::vec3(1.3f, -2.0f, -2.5f),
-	glm::vec3(1.5f,  2.0f, -2.5f),
-	glm::vec3(1.5f,  0.2f, -1.5f),
-	glm::vec3(-1.3f,  1.0f, -1.5f)
-};
-
 vec3 pointLightPositions[] = {
 	vec3(0.7f,  0.2f,  2.0f),
 	vec3(2.3f, -3.3f, -4.0f),
@@ -111,24 +52,6 @@ vec3 pointLightColorss[] = {
 	vec3(0.0f, 1.0f, 0.0f),
 	vec3(0.0f,  0.0f, 1.0f),
 	vec3(1.0f,  0.0f, 1.0f)
-};
-
-vec3 lightColors[] = {
-	   vec3(1.0, 1.0, 1.0),
-	   vec3(3.0, 3.0, 3.0),
-	   vec3(3.0, 3.0, 3.0),
-	   vec3(3.0, 3.0, 3.0)
-};
-
-float transparentVertices[] = {
-	// positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
-	0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-	0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
-	1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
-
-	0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-	1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
-	1.0f,  0.5f,  0.0f,  1.0f,  0.0f
 };
 
 float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
@@ -187,8 +110,6 @@ float skyboxVertices[] = {
 	-1.0f, -1.0f,  1.0f,
 	 1.0f, -1.0f,  1.0f
 };
-
-vector<vec3> vegetation;
 
 //temporary place for buffer objects
 unsigned int VAO;
@@ -266,13 +187,57 @@ unsigned int irradianceMap;
 
 unsigned int prefilterMap;
 unsigned int BRDFLUTtexture;
+unsigned int bloomTexture;
+unsigned int matrices_index;
+vector<mat4> shadowTransforms;
+const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024; //Resolution of the shadow map
+float near = 1.0f;
+float far = 25.f;
+unsigned int pingpongFBO[2];
+unsigned int pingpongBuffers[2];
+mat4 captureProjection;
+vector<mat4> captureViews;
+bool horizontal;
+
+//Extraction functions
+/* Call constructors for all shaders */
+void SetupShaders();
+//Setup Textures and load models that will be rendered
+void SetupModels();
+
+void GenerateWindowVAO();
+void SetupBlendedWindows();
+/* Multisampled framebuffer for anti-aliasing*/
+void GenerateMultisampledFramebuffer();
+/* Convert Multisampled framebuffer to normal texture*/
+void MultisampleToNormalFramebuffer();
+/* Map incoming skybox textures to cubemap. Currently unused*/
+void AssignSkyboxToCubeMap();
+
+void ReserveUniformBuffer();
+void BindShadersToUniformBuffer();
+
+void GenerateShadowMapFramebuffer();
+
+void SetupGuassianBlurFramebuffers();
+
+void HDRItoCubemap();
+
+void SetupIrradianceMap();
+
+void MipMapSkybox();
+
+void BRDFScene();
+
+void GuassianBlurImplementation();
+
+void fillShadowBuffer(mat4 lightViewMatrix, Model* backpack);
 
 int main() {
 
 	//Initialize window and set it to main viewport
 	GLFWwindow* window;
 	initWindow(window);
-
 
 	// Assign callback function for whenever the user adjusts the viewport size
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -283,39 +248,9 @@ int main() {
 	//Bind cube data to new buffer for light
 	bindCubeToVAO(lightVAO);
 
-	//Load and bind textures to buffers
-	/*cubeDiffuse->LoadTexture("../textures/container2.png");
-	cubeSpecular->LoadTexture("../textures/container2_specular.png");
-	cubeEmissive->LoadTexture("../textures/matrix.jpg");
-	cubeDiffuse->BindTextureToBuffer(GL_TEXTURE0);
-	cubeSpecular->BindTextureToBuffer(GL_TEXTURE1);
-	cubeEmissive->BindTextureToBuffer(GL_TEXTURE2);
-	*/
-
+	SetupShaders();
+	
 	Shader currentShader("shaders/vertexShader.vert", "shaders/fragmentShader.frag");
-	//Bind light shader
-	lightShader = new Shader("shaders/lightShader.vert", "shaders/lightShader.frag");
-
-	screenSpaceShader = new Shader("shaders/screenSpaceShader.vert", "shaders/screenSpaceShader.frag");
-
-	normalFaceShader = new Shader("shaders/visibleNormals.vert", "shaders/visibleNormals.frag", "shaders/geometryShader.geom");
-
-	shadowMapShader = new Shader("shaders/shadowMap.vert", "shaders/shadowMap.frag", "shaders/shadowMap.geom");
-
-	blurShader = new Shader("shaders/gaussianBlur.vert", "shaders/gaussianBlur.frag");
-
-	PBRShader = new Shader("shaders/vertexShader.vert", "shaders/PBR.frag");
-
-	loadHDRI("../textures/construction.hdr");
-
-	newSkyboxShader = new Shader("shaders/newSkybox.vert", "shaders/newSkybox.frag");
-
-	convolutionShader = new Shader("shaders/newSkybox.vert", "shaders/cubemapConvolution.frag");
-
-	filterShader = new Shader("shaders/newSkybox.vert", "shaders/preFilter.frag");
-
-	BRDFshader = new Shader("shaders/gaussianBlur.vert", "shaders/BRDF.frag");
-
 	//temp FPS calc
 	float time = 1.f; //Time to delay for
 
@@ -339,548 +274,54 @@ int main() {
 	//load model into buffers
 	backpack->loadModel("../textures/Katana_export.fbx");
 
-	floorModel->setDiffuseDirectory("../textures/floor_diffuse.png");
-	floorModel->bIsInstanced = true; //Tell Model class that this should be instanced
-	floorModel->loadModel("../textures/floor.obj");
+	SetupModels();
 
-	swordModel->setDiffuseDirectory("../textures/chevaliar/textures/albedo.jpg");
-	swordModel->setMetallicDirectory("../textures/chevaliar/textures/metallic.jpg");
-	swordModel->setNormalDirectory("../textures/chevaliar/textures/normal.png");
-	swordModel->setRoughnessDirectory("../textures/chevaliar/textures/roughness.jpg");
-	swordModel->loadModel("../textures/chevaliar/model.dae");
+	SetupBlendedWindows();
 
-	carModel->setDiffuseDirectory("../textures/carTextures/Vehicle_basecolor.png");
-	carModel->setMetallicDirectory("../textures/carTextures/Vehicle_metallic.png");
-	carModel->setNormalDirectory("../textures/carTextures/Vehicle_normal.png");
-	carModel->setRoughnessDirectory("../textures/carTextures/Vehicle_roughness.png");
-	carModel->setAODirectory("../textures/carTextures/Vehicle_ao.png");
-	carModel->setEmissiveDirectory("../textures/carTextures/Vehicle_emissive.png");
-	carModel->loadModel("../textures/cybercar.fbx");
+	GenerateMultisampledFramebuffer();
 
-	//temporary grass locations
-	vegetation.push_back(vec3(-1.5f, 0.0f, -0.48f));
-	vegetation.push_back(vec3(1.5f, 0.0f, 0.51f));
-	//vegetation.push_back(vec3(0.0f, 0.0f, 0.7f));
-	vegetation.push_back(vec3(-0.3f, 0.0f, -2.3f));
-	vegetation.push_back(vec3(0.5f, 0.0f, -0.6f));
+	MultisampleToNormalFramebuffer();
 
-	glGenVertexArrays(1, &vegetationVAO);
-	glBindVertexArray(vegetationVAO); //Bind VAO to store any subsequent VBO & EBO calls
-
-	unsigned int VBO;
-	glGenBuffers(1, &VBO); //Create a single buffer for the VBO
-	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Bind Buffer to GL_ARRAY_BUFFER type
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(transparentVertices), transparentVertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	//storing texture coordinates into buffer
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(2);
-
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	grassTexture->LoadTexture("../textures/blending_transparent_window.png");
-
-	//Sort locations into a sorted order form the location of the camera
-	//NEED TO CHANGE:: CURRENTLY IS ONLY SET ONCE AT THE BEGINNING OF THE RENDER AND NEVER UPDATED. NEEDS MORE CHECKING AND PERFORMANCE
-	//CONSIDERATIONS BEFORE PUTTING INSIDE THE RENDER LOOP AS MAP BECOMES A MEMORY HOG
-	for (int i = 0; i < vegetation.size(); i++)
-	{
-		float distance = length(camera->GetPosition() - vegetation[i]); //get distance from camera to window position
-		sortedWindows[distance] = vegetation[i];
-	}
-
-	//Generate VAO for screen space quad
-	unsigned int quadVBO;
-	glGenVertexArrays(1, &screenQuadVAO);
-	glGenBuffers(1, &quadVBO);
-	glBindVertexArray(screenQuadVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	//Create custom framebuffer
-	glGenFramebuffers(1, &framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-	//Create attachment for framebuffer. Basically memory location buffer such as VAO
-
-	//texture attachment 
-	glGenTextures(1, &textureColorbuffer);
-	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, textureColorbuffer);
-
-	//allocate memory for texture but do not fill it. Also set texture to size of viewport
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, VIEWPORTWIDTH, VIEWPORTHEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-	//Using floating point lighitng values to exceed the LDR range
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA16F, VIEWPORTWIDTH, VIEWPORTHEIGHT, GL_TRUE);
-
-	//glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	//attach color attachment to framebuffer from texture
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureColorbuffer, 0);
-
-	unsigned int bloomMTexture;
-	glGenTextures(1, &bloomMTexture);
-	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, bloomMTexture);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA16F, VIEWPORTWIDTH, VIEWPORTHEIGHT, GL_TRUE);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D_MULTISAMPLE, bloomMTexture, 0);
-
-	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-	glDrawBuffers(2, attachments);
-
-	//glDrawBuffer(GL_COLOR_ATTACHMENT0);
-	//glReadBuffer(GL_COLOR_ATTACHMENT0);
-
-	//glBindTexture(GL_TEXTURE_2D, 0);
-
-	//renderbuffer object attachment
-	//unsigned int rbo;
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-
-	//create depth and stencil renderbuffer object
-	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, VIEWPORTWIDTH, VIEWPORTHEIGHT);
-
-	//Create render buffer with multisampling set to 4
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, VIEWPORTWIDTH, VIEWPORTHEIGHT);
-
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-
-	//Check that the current frambuffer checks the minimum requirements 
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	{
-		cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete" << glCheckFramebufferStatus(GL_FRAMEBUFFER) << endl;
-	}
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//End of framebuffer
-
-	//Create intermediate framebuffer with only a color buffer
-	glGenFramebuffers(1, &intermediateFramebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, intermediateFramebuffer);
-
-	glGenTextures(1, &colorBuffer);
-	glBindTexture(GL_TEXTURE_2D, colorBuffer);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, VIEWPORTWIDTH, VIEWPORTHEIGHT, 0, GL_RGBA, GL_FLOAT, nullptr);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBuffer, 0);
-
-	//Bind second texture for bloom
-	unsigned int bloomTexture;
-	glGenTextures(1, &bloomTexture);
-	glBindTexture(GL_TEXTURE_2D, bloomTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, VIEWPORTWIDTH, VIEWPORTHEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, bloomTexture, 0);
-
-	glDrawBuffers(2, attachments);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-
-	//Check that the current frambuffer checks the minimum requirements 
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	{
-		cout << "ERROR::FRAMEBUFFER:: Intermediate Framebuffer is not complete" << glCheckFramebufferStatus(GL_FRAMEBUFFER) << endl;
-	}
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+	//Assign incoming texture of the scene to the correct shader
 	screenSpaceShader->use();
 	screenSpaceShader->setInt("screenTexture", 0);
 
-	//Create vector of cubemap locations in the order that OpenGL uses
-	vector<string> textures_faces;
-	textures_faces.push_back("../textures/anime-skybox/right.png");
-	textures_faces.push_back("../textures/anime-skybox/left.png");
-	textures_faces.push_back("../textures/anime-skybox/top.png");
-	textures_faces.push_back("../textures/anime-skybox/bottom.png");
-	textures_faces.push_back("../textures/anime-skybox/front.png");
-	textures_faces.push_back("../textures/anime-skybox/back.png");
+	AssignSkyboxToCubeMap();
 
-	//Create cubemap texture
-	glGenTextures(1, &cubemapTexture);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-
-	//Assign each texture location to its corresponding texture target
-	int width, height, nrChannels;
-	unsigned char* data;
-	for (unsigned int i = 0; i < textures_faces.size(); i++)
-	{
-		data = stbi_load(textures_faces[i].c_str(), &width, &height, &nrChannels, 0);
-		if (data)
-		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0,
-				GL_RGBA, GL_UNSIGNED_BYTE, data);
-			stbi_image_free(data);
-		}
-		else
-		{
-			std::cout << "Cubemap texture failed to load at path: " << textures_faces[i] << std::endl;
-			stbi_image_free(data);
-		}
-	}
-
-	//assign cubemap texture parameters
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-
-	//Bind VAO to skybox vertices
-	unsigned int skyboxVBO;
-	glGenVertexArrays(1, &skyboxVAO);
-	glGenBuffers(1, &skyboxVBO);
-	glBindVertexArray(skyboxVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-	//Only using vertices for the skybox
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	//Unbind VAO and VBO
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+	//Assign created skybox to skybox shader
 	skyboxShader = new Shader("shaders/skybox.vert", "shaders/skybox.frag");
 	skyboxShader->use();
 	skyboxShader->setInt("skybox", 0);
 
 
 	//Bind shader block to a specific slot inside OpenGL's binding points
-	currentShader.use();
-	unsigned int matrices_index = glGetUniformBlockIndex(currentShader.ID, "Matrices");
-	glUniformBlockBinding(currentShader.ID, matrices_index, 0);
+	//currentShader.use();
+	//matrices_index = glGetUniformBlockIndex(currentShader.ID, "Matrices");
+	//glUniformBlockBinding(currentShader.ID, matrices_index, 0);
 
-	//Create uniform buffer
-	glGenBuffers(1, &uboMatrices);
-	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(mat4), NULL, GL_STATIC_DRAW); //128 Bytes equates to two full 4x4 matrices
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	ReserveUniformBuffer();
 
-	//Bind uniform buffer object to binding point 0
-	//glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboMatrices);
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(mat4));
+	GenerateShadowMapFramebuffer();
 
-	//Insert data into buffer
-	mat4 projection = perspective(camera->GetFOV(), (float)VIEWPORTWIDTH / (float)VIEWPORTHEIGHT, 0.1f, 100.f);
-	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(projection));
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	SetupGuassianBlurFramebuffers();
 
-	mat4 view = camera->GetViewMatrix();
-	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(view));
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	HDRItoCubemap();
 
-	//Attach binding object to light and skybox shader
-	//lightShader
-	lightShader->use();
-	matrices_index = glGetUniformBlockIndex(lightShader->ID, "Matrices");
-	glUniformBlockBinding(lightShader->ID, matrices_index, 0);
-	//skyboxShader
-	skyboxShader->use();
-	matrices_index = glGetUniformBlockIndex(skyboxShader->ID, "Matrices");
-	glUniformBlockBinding(skyboxShader->ID, matrices_index, 0);
+	SetupIrradianceMap();
 
-	normalFaceShader->use();
-	matrices_index = glGetUniformBlockIndex(normalFaceShader->ID, "Matrices");
-	glUniformBlockBinding(normalFaceShader->ID, matrices_index, 0);
-
-	//Shadow map fraembuffer
-	glGenFramebuffers(1, &shadowMapFB);
-	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024; //Resolution of the shadow map
-
-	unsigned int shadowMap;
-	glGenTextures(1, &shadowMap);
-	glBindTexture(GL_TEXTURE_2D, shadowMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0,
-		GL_DEPTH_COMPONENT, GL_FLOAT, NULL); //Texture that only stores the depth value of each fragment
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFB);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMap, 0);
-	//Tell OpenGL this framebuffer will not be used for any rendering
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	//Omnidirectional shadows using a depth cubemap
-	glGenTextures(1, &depthCubemap);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-	for (int i = 0; i < 6; ++i)
-	{
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH,
-			SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	}
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	//Override old framebuffer GL_DEPTH_ATTACHMENT value
-	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFB);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	//Set direction for each cubemap plane
-	float aspect = (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT;
-	float near = 1.0f;
-	float far = 25.f;
-	mat4 shadowProj = perspective(radians(90.f), aspect, near, far);
-
-	vector<mat4> shadowTransforms;
-	shadowTransforms.push_back(shadowProj * lookAt(
-		vec3(0.7f, 0.2f, 2.0f), vec3(0.7f, 0.2f, 2.0f) + vec3(1.0, 0.0, 0.0), vec3(0.0, -1.0, 0.0)));
-	shadowTransforms.push_back(shadowProj * lookAt(
-		vec3(0.7f, 0.2f, 2.0f), vec3(0.7f, 0.2f, 2.0f) + vec3(-1.0, 0.0, 0.0), vec3(0.0, -1.0, 0.0)));
-	shadowTransforms.push_back(shadowProj * lookAt(
-		vec3(0.7f, 0.2f, 2.0f), vec3(0.7f, 0.2f, 2.0f) + vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0)));
-	shadowTransforms.push_back(shadowProj * lookAt(
-		vec3(0.7f, 0.2f, 2.0f), vec3(0.7f, 0.2f, 2.0f) + vec3(0.0, -1.0, 0.0), vec3(0.0, 0.0, -1.0)));
-	shadowTransforms.push_back(shadowProj * lookAt(
-		vec3(0.7f, 0.2f, 2.0f), vec3(0.7f, 0.2f, 2.0f) + vec3(0.0, 0.0, 1.0), vec3(0.0, -1.0, 0.0)));
-	shadowTransforms.push_back(shadowProj * lookAt(
-		vec3(0.7f, 0.2f, 2.0f), vec3(0.7f, 0.2f, 2.0f) + vec3(0.0, 0.0, -1.0), vec3(0.0, -1.0, 0.0)));
-
-	unsigned int pingpongFBO[2];
-	unsigned int pingpongBuffers[2];
-	glGenFramebuffers(2, pingpongFBO);
-	glGenTextures(2, pingpongBuffers);
-	for (int i = 0; i < 2; i++)
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
-		glBindTexture(GL_TEXTURE_2D, pingpongBuffers[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, VIEWPORTWIDTH, VIEWPORTHEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongBuffers[i], 0);
-	}
-
-	//convert HDRI to cubemap
-	glGenFramebuffers(1, &captureFBO);
-	glGenRenderbuffers(1, &captureRBO);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512); //allocate storage to renderbuffer
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
-
-	glGenTextures(1, &envCubemap);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
-	for (int i = 0; i < 6; ++i)
-	{
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
-	}
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	//capture 2D texture onto the cubemap faces
-	mat4 captureProjection = perspective(radians(90.0), 1.0, 0.1, 10.0);
-	//Each direction of the cube
-	mat4 captureViews[] =
-	{
-		lookAt(vec3(0.0, 0.0, 0.0),vec3(1.0, 0.0, 0.0), vec3(0.0, -1.0, 0.0)),
-		lookAt(vec3(0.0, 0.0, 0.0),vec3(-1.0, 0.0, 0.0), vec3(0.0, -1.0, 0.0)),
-		lookAt(vec3(0.0, 0.0, 0.0),vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0)),
-		lookAt(vec3(0.0, 0.0, 0.0),vec3(0.0, -1.0, 0.0), vec3(0.0, 0.0, -1.0)),
-		lookAt(vec3(0.0, 0.0, 0.0),vec3(0.0, 0.0, 1.0), vec3(0.0, -1.0, 0.0)),
-		lookAt(vec3(0.0, 0.0, 0.0),vec3(0.0, 0.0, -1.0), vec3(0.0, -1.0, 0.0))
-	};
-
-	skyboxShader->use();
-	skyboxShader->setInt("HDRImap", 0);
-	skyboxShader->setMat4("projection", captureProjection);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, HDRIMap);
-	//Change viewport to size of incoming framebuffer
-	glViewport(0, 0, 512, 512);
-	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-	for (int i = 0; i < 6; ++i)
-	{
-		skyboxShader->setMat4("view", captureViews[i]);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, envCubemap, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glBindVertexArray(skyboxVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	//generate mipmap levels from first face
-	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
-	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-
-	//Give new shader access to projection binding
-	newSkyboxShader->use();
-	matrices_index = glGetUniformBlockIndex(normalFaceShader->ID, "Matrices");
-	glUniformBlockBinding(normalFaceShader->ID, matrices_index, 0);
-
-	//Setup irradiance cubemap
-	glGenTextures(1, &irradianceMap);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
-	for (int i = 0; i < 6; ++i)
-	{
-		// Store irradiance map at a low resolution
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 32, 32, 0, GL_RGB, GL_FLOAT, nullptr);
-	}
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	//Re-scale the render buffer to now accurately portray the new memory requirements
-	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
-	//render new cubemap to framebuffer
-	convolutionShader->use();
-	convolutionShader->setInt("skyboxMap", 0);
-	convolutionShader->setMat4("projection", captureProjection);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
-
-	glViewport(0, 0, 32, 32);
-	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-	for (int i = 0; i < 6; ++i)
-	{
-		convolutionShader->setMat4("view", captureViews[i]);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glBindVertexArray(skyboxVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+	//Setup irradiance map to main shader
 	PBRShader->use();
 	PBRShader->setInt("irradianceMap", 7);
 	glActiveTexture(GL_TEXTURE7);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
 
-	convolutionShader->use();
+	//Activate new texture to not accidentally affect the irradiance map
 	glActiveTexture(GL_TEXTURE8);
 
-	//Pre-Filtering the HDR environment map
-	glGenTextures(1, &prefilterMap);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
-	for (int i = 0; i < 6; ++i)
-	{
-		//128 x 128 reflection resolution
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
-	}
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); //enable trilinear filtering
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	MipMapSkybox();
 
-	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	BRDFScene();
 
-	//Pre-Filter skybox into mipmap levels
-	filterShader->use();
-	filterShader->setInt("skyboxMap", 0);
-	filterShader->setMat4("projection", captureProjection);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-	unsigned int maxMipLevels = 5;
-	for (int mip = 0; mip < maxMipLevels; ++mip)
-	{
-		//resize framebuffer according to mip-level size
-		unsigned int mipWidth = 128 * pow(0.5, mip);
-		unsigned int mipHeight = 128 * pow(0.5, mip);
-		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
-		glViewport(0, 0, mipWidth, mipHeight);
-
-		float roughness = (float)mip / (float)(maxMipLevels - 1);
-		filterShader->setFloat("roughness", roughness);
-		for (int i = 0; i < 6; ++i)
-		{
-			filterShader->setMat4("view", captureViews[i]);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-				prefilterMap, mip);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			glBindVertexArray(skyboxVAO);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	//Filter cubemap faces to remove seams around the edges
-	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-
-	//Texture to store BRDF result
-	glGenTextures(1, &BRDFLUTtexture);
-
-	//pre-allocate memory for LUT texture
-	glBindTexture(GL_TEXTURE_2D, BRDFLUTtexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	//re-use framebuffer over screen-space quad
-	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, BRDFLUTtexture, 0);
-
-	glViewport(0, 0, 512, 512);
-	BRDFshader->use();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glBindVertexArray(screenQuadVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	PBRShader->use();
-	glActiveTexture(GL_TEXTURE8);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
-	PBRShader->setInt("prefilterMap", 8);
-	glBindTexture(GL_TEXTURE_2D, BRDFLUTtexture);
 	//Run the window until explicitly told to stop
 	while (!glfwWindowShouldClose(window))  //Check if the window has been instructed to close
 	{
@@ -931,21 +372,8 @@ int main() {
 		glEnable(GL_CULL_FACE); //enable face culling
 		glCullFace(GL_FRONT); //Cull front faces
 
-		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT); //Change viewport to size of shadow map
-		glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFB);
-		glClear(GL_DEPTH_BUFFER_BIT);
-		shadowMapShader->use();
-		//bind shadowTransforms vector to shader
-		for (int i = 0; i < 6; ++i)
-		{
-			shadowMapShader->setMat4("shadowMatrices[" + to_string(i) + "]", shadowTransforms.at(i));
-		}
-		shadowMapShader->setFloat("far_plane", far);
-		shadowMapShader->setVec3("lightPos", vec3(0.7f, 0.2f, 2.0f));
-		shadowMapShader->setMat4("lightSpaceMatrix", lightViewMatrix);
-		display(*shadowMapShader, *backpack);
-
-		glViewport(0, 0, VIEWPORTWIDTH, VIEWPORTHEIGHT); //Reset viewport size
+		fillShadowBuffer(lightViewMatrix, backpack);
+		
 		//draw scene into offscreen frame buffer
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 		//glBindTexture(GL_TEXTURE_2D, shadowMap);
@@ -956,28 +384,17 @@ int main() {
 
 		glDisable(GL_CULL_FACE);
 		glCullFace(GL_BACK); //Cull front faces
-		//glEnable(GL_CULL_FACE); //enable face culling
-		//glCullFace(GL_BACK); //Cull front faces
-		//glFrontFace(GL_CCW); //counter clockwise ordering of faces. This is the usual default bahaviour of exported models
-		currentShader.use();
-		currentShader.setMat4("lightSpaceMatrix", lightViewMatrix);
-		currentShader.setVec3("lightPos", vec3(1.2f, 1.0f, 2.0f));
-		currentShader.setFloat("far_plane", far);
 		
+		//Draw scene as normal with PBR shader to "framebuffer" framebuffer
 		PBRShader->use();
-		//PBRShader->setMat4("lightSpaceMatrix", lightViewMatrix);
-		//PBRShader->setVec3("lightPos", vec3(1.2f, 2.0f, 2.0f));
 		PBRShader->setFloat("far_plane", far);
 		glActiveTexture(GL_TEXTURE6);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 		PBRShader->setInt("shadowMapCube", 6);
-		//display(currentShader, *backpack);
 		display(*PBRShader, *backpack);
 
-		//Blit multisampled frameburffer to default framebuffer
-		//glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
-		//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFramebuffer);
-		//glBlitFramebuffer(0, 0, VIEWPORTWIDTH, VIEWPORTHEIGHT, 0, 0, VIEWPORTWIDTH, VIEWPORTHEIGHT, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		//Blit multisampled frameburffer to default framebuffer seperating the colour attachments
+		/* GL_COLOR_ATTACHMENT0 holds the normal output whereas GL_COLOR_ATTACHMENT1 holds fragments above a certain threshold for bloom*/
 		glNamedFramebufferReadBuffer(framebuffer, GL_COLOR_ATTACHMENT0);
 		glNamedFramebufferDrawBuffer(intermediateFramebuffer, GL_COLOR_ATTACHMENT0);
 		glBlitNamedFramebuffer(framebuffer, intermediateFramebuffer, 0, 0, VIEWPORTWIDTH, VIEWPORTHEIGHT, 0, 0, VIEWPORTWIDTH, VIEWPORTHEIGHT, GL_COLOR_BUFFER_BIT, GL_NEAREST);
@@ -986,48 +403,24 @@ int main() {
 		glNamedFramebufferDrawBuffer(intermediateFramebuffer, GL_COLOR_ATTACHMENT1);
 		glBlitNamedFramebuffer(framebuffer, intermediateFramebuffer, 0, 0, VIEWPORTWIDTH, VIEWPORTHEIGHT, 0, 0, VIEWPORTWIDTH, VIEWPORTHEIGHT, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-		//Gaussian Blur
-		bool horizontal = true, first_iteration = true;
-		int amount = 10;
-		blurShader->use();
-		for (int i = 0; i < amount; i++)
-		{
-			glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
-			blurShader->setInt("horizontal", horizontal);
-			if (first_iteration)
-			{
-				glBindTexture(GL_TEXTURE_2D, bloomTexture);
-				first_iteration = false;
-			}
-			else
-			{
-				glBindTexture(GL_TEXTURE_2D, pingpongBuffers[!horizontal]);
-			}
-			glBindVertexArray(screenQuadVAO);
-			glDisable(GL_DEPTH_TEST);
-			glDrawArrays(GL_TRIANGLES, 0, 6);
+		GuassianBlurImplementation();
 
-			horizontal = !horizontal;
-		}
-
-		//go to default framebuffer and render texture into visible window
+		//Go to default framebuffer and draw the final output texture to the viewport
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		//glEnable(GL_FRAMEBUFFER_SRGB); //Enable gamma correction only on final framebuffer output
 		screenSpaceShader->use(); //use screen space shader
 		glClear(GL_COLOR_BUFFER_BIT); //clear color bit of original buffer
-		glDisable(GL_DEPTH_TEST); //there will be no depth to destroy in screen space
-		glDisable(GL_CULL_FACE); //disable culling otherwise screenQuad will be automatically destroyed for being too close to camera
+		glDisable(GL_DEPTH_TEST); //there will be no depth to destroy in 2D screen space
+		glDisable(GL_CULL_FACE); //disable culling otherwise screenQuad will be automatically destroyed as it is too close to the viewer
 		//render the quad to which the texture will be displayed
 		glBindVertexArray(screenQuadVAO);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, colorBuffer);
+		glBindTexture(GL_TEXTURE_2D, colorBuffer); //Holds the normal scene output with lighting calculations
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, pingpongBuffers[!horizontal]);
+		glBindTexture(GL_TEXTURE_2D, pingpongBuffers[!horizontal]); //Holds the blurred bloom output
 		screenSpaceShader->setInt("screenTexture", 0);
 		screenSpaceShader->setInt("bloomBlur", 1);
 		screenSpaceShader->setFloat("exposure", 1.0); //HDR exposure
 		glDrawArrays(GL_TRIANGLES, 0, 6);
-		//glDisable(GL_FRAMEBUFFER_SRGB); //Disable gamma correction for next frame
 
 		//temp looping timer
 		float now = glfwGetTime(); //Get time of current frame
@@ -1338,6 +731,52 @@ void display(Shader shaderToUse, Model m)
 
 void bindCubeToVAO(unsigned int& vao)
 {
+	//temporary place for object buffer data
+	float Cubevertices[] = {
+		// Back face
+		   -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
+			0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+			0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right         
+			0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+		   -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
+		   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+		   // Front face
+		   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+			0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+			0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
+			0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
+		   -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left
+		   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+		   // Left face
+		   -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
+		   -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left
+		   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
+		   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
+		   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
+		   -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
+		   // Right face
+			0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
+			0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
+			0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right         
+			0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
+			0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
+			0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left     
+			// Bottom face
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+			 0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left
+			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
+			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+			// Top face
+			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right     
+			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+			-0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left       
+	};
+
 	//Basic VAO 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao); //Bind VAO to store any subsequent VBO & EBO calls
@@ -1385,6 +824,292 @@ void scrollCallback(GLFWwindow* window, double xOffset, double yOffset)
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
+void SetupShaders()
+{
+	//Bind light shader
+	lightShader = new Shader("shaders/lightShader.vert", "shaders/lightShader.frag");
+
+	screenSpaceShader = new Shader("shaders/screenSpaceShader.vert", "shaders/screenSpaceShader.frag");
+
+	normalFaceShader = new Shader("shaders/visibleNormals.vert", "shaders/visibleNormals.frag", "shaders/geometryShader.geom");
+
+	shadowMapShader = new Shader("shaders/shadowMap.vert", "shaders/shadowMap.frag", "shaders/shadowMap.geom");
+
+	blurShader = new Shader("shaders/gaussianBlur.vert", "shaders/gaussianBlur.frag");
+
+	PBRShader = new Shader("shaders/vertexShader.vert", "shaders/PBR.frag");
+
+	loadHDRI("../textures/construction.hdr");
+
+	newSkyboxShader = new Shader("shaders/newSkybox.vert", "shaders/newSkybox.frag");
+
+	convolutionShader = new Shader("shaders/newSkybox.vert", "shaders/cubemapConvolution.frag");
+
+	filterShader = new Shader("shaders/newSkybox.vert", "shaders/preFilter.frag");
+
+	BRDFshader = new Shader("shaders/gaussianBlur.vert", "shaders/BRDF.frag");
+
+}
+
+void SetupModels()
+{
+	floorModel->setDiffuseDirectory("../textures/floor_diffuse.png");
+	floorModel->bIsInstanced = true; //Tell Model class that this should be instanced
+	floorModel->loadModel("../textures/floor.obj");
+
+	swordModel->setDiffuseDirectory("../textures/chevaliar/textures/albedo.jpg");
+	swordModel->setMetallicDirectory("../textures/chevaliar/textures/metallic.jpg");
+	swordModel->setNormalDirectory("../textures/chevaliar/textures/normal.png");
+	swordModel->setRoughnessDirectory("../textures/chevaliar/textures/roughness.jpg");
+	swordModel->loadModel("../textures/chevaliar/model.dae");
+
+	carModel->setDiffuseDirectory("../textures/carTextures/Vehicle_basecolor.png");
+	carModel->setMetallicDirectory("../textures/carTextures/Vehicle_metallic.png");
+	carModel->setNormalDirectory("../textures/carTextures/Vehicle_normal.png");
+	carModel->setRoughnessDirectory("../textures/carTextures/Vehicle_roughness.png");
+	carModel->setAODirectory("../textures/carTextures/Vehicle_ao.png");
+	carModel->setEmissiveDirectory("../textures/carTextures/Vehicle_emissive.png");
+	carModel->loadModel("../textures/cybercar.fbx");
+}
+
+void SetupBlendedWindows()
+{
+	vector<vec3> vegetation; //Hold locations of the windows
+
+	//Vertices and texture coordinates for each 2D square
+	float transparentVertices[] = {
+		// positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
+		0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+		0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
+		1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+
+		0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+		1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+		1.0f,  0.5f,  0.0f,  1.0f,  0.0f
+	};
+
+	//temporary grass locations
+	vegetation.push_back(vec3(-1.5f, 0.0f, -0.48f));
+	vegetation.push_back(vec3(1.5f, 0.0f, 0.51f));
+	//vegetation.push_back(vec3(0.0f, 0.0f, 0.7f));
+	vegetation.push_back(vec3(-0.3f, 0.0f, -2.3f));
+	vegetation.push_back(vec3(0.5f, 0.0f, -0.6f));
+
+	glGenVertexArrays(1, &vegetationVAO);
+	glBindVertexArray(vegetationVAO); //Bind VAO to store any subsequent VBO & EBO calls
+
+	unsigned int VBO;
+	glGenBuffers(1, &VBO); //Create a single buffer for the VBO
+	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Bind Buffer to GL_ARRAY_BUFFER type
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(transparentVertices), transparentVertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	//storing texture coordinates into buffer
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	grassTexture->LoadTexture("../textures/blending_transparent_window.png");
+
+	//Sort locations into a sorted order form the location of the camera
+	//NEED TO CHANGE:: CURRENTLY IS ONLY SET ONCE AT THE BEGINNING OF THE RENDER AND NEVER UPDATED. NEEDS MORE CHECKING AND PERFORMANCE
+	//CONSIDERATIONS BEFORE PUTTING INSIDE THE RENDER LOOP AS MAP BECOMES A MEMORY HOG
+	for (int i = 0; i < vegetation.size(); i++)
+	{
+		float distance = length(camera->GetPosition() - vegetation[i]); //get distance from camera to window position
+		sortedWindows[distance] = vegetation[i];
+	}
+	//Generate VAO for easy access to objects
+	GenerateWindowVAO();
+}
+
+void GenerateWindowVAO()
+{
+	//Generate VAO for screen space quad
+	unsigned int quadVBO;
+	glGenVertexArrays(1, &screenQuadVAO);
+	glGenBuffers(1, &quadVBO);
+	glBindVertexArray(screenQuadVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void GenerateMultisampledFramebuffer()
+{
+	//Create custom framebuffer
+	glGenFramebuffers(1, &framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	//Create attachment for framebuffer. Basically memory location buffer such as VAO
+
+	//texture attachment 
+	glGenTextures(1, &textureColorbuffer);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, textureColorbuffer);
+
+	//allocate memory for texture but do not fill it. Also set texture to size of viewport
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, VIEWPORTWIDTH, VIEWPORTHEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+	//Using floating point lighitng values to exceed the LDR range
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA16F, VIEWPORTWIDTH, VIEWPORTHEIGHT, GL_TRUE);
+
+	//glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	//glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	//attach color attachment to framebuffer from texture
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureColorbuffer, 0);
+
+	unsigned int bloomMTexture;
+	glGenTextures(1, &bloomMTexture);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, bloomMTexture);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA16F, VIEWPORTWIDTH, VIEWPORTHEIGHT, GL_TRUE);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D_MULTISAMPLE, bloomMTexture, 0);
+
+	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(2, attachments);
+
+	//glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	//glReadBuffer(GL_COLOR_ATTACHMENT0);
+
+	//glBindTexture(GL_TEXTURE_2D, 0);
+
+	//renderbuffer object attachment
+	//unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+
+	//create depth and stencil renderbuffer object
+	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, VIEWPORTWIDTH, VIEWPORTHEIGHT);
+
+	//Create render buffer with multisampling set to 4
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, VIEWPORTWIDTH, VIEWPORTHEIGHT);
+
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+	//Check that the current frambuffer checks the minimum requirements 
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete" << glCheckFramebufferStatus(GL_FRAMEBUFFER) << endl;
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//End of framebuffer
+}
+
+void MultisampleToNormalFramebuffer()
+{
+	//Create intermediate framebuffer with only a color buffer
+	glGenFramebuffers(1, &intermediateFramebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, intermediateFramebuffer);
+
+	glGenTextures(1, &colorBuffer);
+	glBindTexture(GL_TEXTURE_2D, colorBuffer);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, VIEWPORTWIDTH, VIEWPORTHEIGHT, 0, GL_RGBA, GL_FLOAT, nullptr);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBuffer, 0);
+
+	//Bind second texture for bloom
+	glGenTextures(1, &bloomTexture);
+	glBindTexture(GL_TEXTURE_2D, bloomTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, VIEWPORTWIDTH, VIEWPORTHEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, bloomTexture, 0);
+
+	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(2, attachments);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+	//Check that the current frambuffer checks the minimum requirements 
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		cout << "ERROR::FRAMEBUFFER:: Intermediate Framebuffer is not complete" << glCheckFramebufferStatus(GL_FRAMEBUFFER) << endl;
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void AssignSkyboxToCubeMap()
+{
+	//Create vector of cubemap locations in the order that OpenGL uses
+	vector<string> textures_faces;
+	textures_faces.push_back("../textures/anime-skybox/right.png");
+	textures_faces.push_back("../textures/anime-skybox/left.png");
+	textures_faces.push_back("../textures/anime-skybox/top.png");
+	textures_faces.push_back("../textures/anime-skybox/bottom.png");
+	textures_faces.push_back("../textures/anime-skybox/front.png");
+	textures_faces.push_back("../textures/anime-skybox/back.png");
+
+	//Create cubemap texture
+	glGenTextures(1, &cubemapTexture);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+
+	//Assign each texture location to its corresponding texture target
+	int width, height, nrChannels;
+	unsigned char* data;
+	for (unsigned int i = 0; i < textures_faces.size(); i++)
+	{
+		data = stbi_load(textures_faces[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0,
+				GL_RGBA, GL_UNSIGNED_BYTE, data);
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "Cubemap texture failed to load at path: " << textures_faces[i] << std::endl;
+			stbi_image_free(data);
+		}
+	}
+
+	//assign cubemap texture parameters
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+	//Bind VAO to skybox vertices
+	unsigned int skyboxVBO;
+	glGenVertexArrays(1, &skyboxVAO);
+	glGenBuffers(1, &skyboxVBO);
+	glBindVertexArray(skyboxVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	//Only using vertices for the skybox
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	//Unbind VAO and VBO
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 void loadHDRI(const char* path)
 {
 	string filename = string(path);
@@ -1415,6 +1140,370 @@ void loadHDRI(const char* path)
 		cout << stbi_failure_reason() << endl;
 		free(data);
 	}
+}
+
+void ReserveUniformBuffer()
+{
+	//Create uniform buffer
+	glGenBuffers(1, &uboMatrices);
+	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(mat4), NULL, GL_STATIC_DRAW); //128 Bytes equates to two full 4x4 matrices
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	//Bind uniform buffer object to binding point 0
+	//glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboMatrices);
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(mat4));
+
+	//Insert data into buffer
+	mat4 projection = perspective(camera->GetFOV(), (float)VIEWPORTWIDTH / (float)VIEWPORTHEIGHT, 0.1f, 100.f);
+	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(projection));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	mat4 view = camera->GetViewMatrix();
+	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(view));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	BindShadersToUniformBuffer();
+}
+
+void BindShadersToUniformBuffer()
+{
+	//Attach binding object to light and skybox shader
+	//lightShader
+	lightShader->use();
+	matrices_index = glGetUniformBlockIndex(lightShader->ID, "Matrices");
+	glUniformBlockBinding(lightShader->ID, matrices_index, 0);
+	//skyboxShader
+	skyboxShader->use();
+	matrices_index = glGetUniformBlockIndex(skyboxShader->ID, "Matrices");
+	glUniformBlockBinding(skyboxShader->ID, matrices_index, 0);
+
+	normalFaceShader->use();
+	matrices_index = glGetUniformBlockIndex(normalFaceShader->ID, "Matrices");
+	glUniformBlockBinding(normalFaceShader->ID, matrices_index, 0);
+
+	//Give new shader access to projection binding
+	newSkyboxShader->use();
+	matrices_index = glGetUniformBlockIndex(newSkyboxShader->ID, "Matrices");
+	glUniformBlockBinding(newSkyboxShader->ID, matrices_index, 0);
+
+}
+
+void GenerateShadowMapFramebuffer()
+{
+	//Shadow map fraembuffer
+	glGenFramebuffers(1, &shadowMapFB);
+
+	unsigned int shadowMap;
+	glGenTextures(1, &shadowMap);
+	glBindTexture(GL_TEXTURE_2D, shadowMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0,
+		GL_DEPTH_COMPONENT, GL_FLOAT, NULL); //Texture that only stores the depth value of each fragment
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFB);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMap, 0);
+	//Tell OpenGL this framebuffer will not be used for any rendering
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//Omnidirectional shadows using a depth cubemap
+	glGenTextures(1, &depthCubemap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+	for (int i = 0; i < 6; ++i)
+	{
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH,
+			SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	//Override old framebuffer GL_DEPTH_ATTACHMENT value
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFB);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//Set direction for each cubemap plane
+	float aspect = (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT;
+	mat4 shadowProj = perspective(radians(90.f), aspect, near, far);
+
+	shadowTransforms.push_back(shadowProj * lookAt(
+		vec3(0.7f, 0.2f, 2.0f), vec3(0.7f, 0.2f, 2.0f) + vec3(1.0, 0.0, 0.0), vec3(0.0, -1.0, 0.0)));
+	shadowTransforms.push_back(shadowProj * lookAt(
+		vec3(0.7f, 0.2f, 2.0f), vec3(0.7f, 0.2f, 2.0f) + vec3(-1.0, 0.0, 0.0), vec3(0.0, -1.0, 0.0)));
+	shadowTransforms.push_back(shadowProj * lookAt(
+		vec3(0.7f, 0.2f, 2.0f), vec3(0.7f, 0.2f, 2.0f) + vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0)));
+	shadowTransforms.push_back(shadowProj * lookAt(
+		vec3(0.7f, 0.2f, 2.0f), vec3(0.7f, 0.2f, 2.0f) + vec3(0.0, -1.0, 0.0), vec3(0.0, 0.0, -1.0)));
+	shadowTransforms.push_back(shadowProj * lookAt(
+		vec3(0.7f, 0.2f, 2.0f), vec3(0.7f, 0.2f, 2.0f) + vec3(0.0, 0.0, 1.0), vec3(0.0, -1.0, 0.0)));
+	shadowTransforms.push_back(shadowProj * lookAt(
+		vec3(0.7f, 0.2f, 2.0f), vec3(0.7f, 0.2f, 2.0f) + vec3(0.0, 0.0, -1.0), vec3(0.0, -1.0, 0.0)));
+}
+
+void SetupGuassianBlurFramebuffers()
+{
+	glGenFramebuffers(2, pingpongFBO);
+	glGenTextures(2, pingpongBuffers);
+	for (int i = 0; i < 2; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
+		glBindTexture(GL_TEXTURE_2D, pingpongBuffers[i]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, VIEWPORTWIDTH, VIEWPORTHEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongBuffers[i], 0);
+	}
+}
+
+void HDRItoCubemap()
+{
+	//convert HDRI to cubemap
+	glGenFramebuffers(1, &captureFBO);
+	glGenRenderbuffers(1, &captureRBO);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512); //allocate storage to renderbuffer
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
+
+	glGenTextures(1, &envCubemap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+	for (int i = 0; i < 6; ++i)
+	{
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//capture 2D texture onto the cubemap faces
+	captureProjection = perspective(radians(90.0), 1.0, 0.1, 10.0);
+	//Each direction of the cube
+	captureViews.push_back(lookAt(vec3(0.0, 0.0, 0.0), vec3(1.0, 0.0, 0.0), vec3(0.0, -1.0, 0.0)));
+	captureViews.push_back(lookAt(vec3(0.0, 0.0, 0.0), vec3(-1.0, 0.0, 0.0), vec3(0.0, -1.0, 0.0)));
+	captureViews.push_back(lookAt(vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0)));
+	captureViews.push_back(lookAt(vec3(0.0, 0.0, 0.0), vec3(0.0, -1.0, 0.0), vec3(0.0, 0.0, -1.0)));
+	captureViews.push_back(lookAt(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0), vec3(0.0, -1.0, 0.0)));
+	captureViews.push_back(lookAt(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, -1.0), vec3(0.0, -1.0, 0.0)));
+
+	skyboxShader->use();
+	skyboxShader->setInt("HDRImap", 0);
+	skyboxShader->setMat4("projection", captureProjection);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, HDRIMap);
+	//Change viewport to size of incoming framebuffer
+	glViewport(0, 0, 512, 512);
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	for (int i = 0; i < 6; ++i)
+	{
+		skyboxShader->setMat4("view", captureViews[i]);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, envCubemap, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glBindVertexArray(skyboxVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//generate mipmap levels from first face
+	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+}
+
+void SetupIrradianceMap()
+{
+	//Setup irradiance cubemap
+	glGenTextures(1, &irradianceMap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
+	for (int i = 0; i < 6; ++i)
+	{
+		// Store irradiance map at a low resolution
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 32, 32, 0, GL_RGB, GL_FLOAT, nullptr);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//Re-scale the render buffer to now accurately portray the new memory requirements
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
+	//render new cubemap to framebuffer
+	convolutionShader->use();
+	convolutionShader->setInt("skyboxMap", 0);
+	convolutionShader->setMat4("projection", captureProjection);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+
+	glViewport(0, 0, 32, 32);
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	for (int i = 0; i < 6; ++i)
+	{
+		convolutionShader->setMat4("view", captureViews[i]);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glBindVertexArray(skyboxVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void MipMapSkybox()
+{
+	//Pre-Filtering the HDR environment map
+	glGenTextures(1, &prefilterMap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+	for (int i = 0; i < 6; ++i)
+	{
+		//128 x 128 reflection resolution
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); //enable trilinear filtering
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+	//Pre-Filter skybox into mipmap levels
+	filterShader->use();
+	filterShader->setInt("skyboxMap", 0);
+	filterShader->setMat4("projection", captureProjection);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	unsigned int maxMipLevels = 5;
+	for (int mip = 0; mip < maxMipLevels; ++mip)
+	{
+		//resize framebuffer according to mip-level size
+		unsigned int mipWidth = 128 * pow(0.5, mip);
+		unsigned int mipHeight = 128 * pow(0.5, mip);
+		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
+		glViewport(0, 0, mipWidth, mipHeight);
+
+		float roughness = (float)mip / (float)(maxMipLevels - 1);
+		filterShader->setFloat("roughness", roughness);
+		for (int i = 0; i < 6; ++i)
+		{
+			filterShader->setMat4("view", captureViews[i]);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+				prefilterMap, mip);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			glBindVertexArray(skyboxVAO);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//Filter cubemap faces to remove seams around the edges
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+}
+
+void BRDFScene()
+{
+	//Texture to store BRDF result
+	glGenTextures(1, &BRDFLUTtexture);
+
+	//pre-allocate memory for LUT texture
+	glBindTexture(GL_TEXTURE_2D, BRDFLUTtexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//re-use framebuffer over screen-space quad
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, BRDFLUTtexture, 0);
+
+	glViewport(0, 0, 512, 512);
+	BRDFshader->use();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glBindVertexArray(screenQuadVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	PBRShader->use();
+	glActiveTexture(GL_TEXTURE8);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+	PBRShader->setInt("prefilterMap", 8);
+	glBindTexture(GL_TEXTURE_2D, BRDFLUTtexture);
+}
+
+void GuassianBlurImplementation()
+{
+	//Gaussian Blur
+	horizontal = true;
+	bool first_iteration = true;
+	int amount = 10;
+	blurShader->use();
+	for (int i = 0; i < amount; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
+		blurShader->setInt("horizontal", horizontal);
+		if (first_iteration)
+		{
+			glBindTexture(GL_TEXTURE_2D, bloomTexture);
+			first_iteration = false;
+		}
+		else
+		{
+			glBindTexture(GL_TEXTURE_2D, pingpongBuffers[!horizontal]);
+		}
+		glBindVertexArray(screenQuadVAO);
+		glDisable(GL_DEPTH_TEST);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		horizontal = !horizontal;
+	}
+
+}
+
+void fillShadowBuffer(mat4 lightViewMatrix, Model* backpack)
+{
+	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT); //Change viewport to size of shadow map
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFB);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	shadowMapShader->use();
+	//bind shadowTransforms vector to shader
+	for (int i = 0; i < 6; ++i)
+	{
+		shadowMapShader->setMat4("shadowMatrices[" + to_string(i) + "]", shadowTransforms.at(i));
+	}
+	shadowMapShader->setFloat("far_plane", far);
+	shadowMapShader->setVec3("lightPos", vec3(0.7f, 0.2f, 2.0f));
+	shadowMapShader->setMat4("lightSpaceMatrix", lightViewMatrix);
+	display(*shadowMapShader, *backpack);
+
+	glViewport(0, 0, VIEWPORTWIDTH, VIEWPORTHEIGHT); //Reset viewport size
 }
 
 void mouseCallback(GLFWwindow* window, double xPosition, double yPosition)

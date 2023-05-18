@@ -41,27 +41,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vertexShader.vert" />
-    <None Include="fragmentShader.frag" />
-    <None Include="lightShader.frag" />
-    <None Include="lightShader.vert" />
-    <None Include="screenSpaceShader.vert" />
-    <None Include="screenSpaceShader.frag" />
-    <None Include="skybox.vert" />
-    <None Include="skybox.frag" />
-    <None Include="geometryShader.geom" />
-    <None Include="visibleNormals.vert" />
-    <None Include="visibleNormals.frag" />
-    <None Include="shadowMap.vert" />
-    <None Include="shadowMap.frag" />
-    <None Include="shadowMap.geom" />
-    <None Include="gaussianBlur.frag" />
-    <None Include="gaussianBlur.vert" />
-    <None Include="PBR.frag" />
-    <None Include="newSkybox.vert" />
-    <None Include="newSkybox.frag" />
-    <None Include="cubemapConvolution.frag" />
-    <None Include="preFilter.frag" />
     <None Include="BRDF.frag" />
   </ItemGroup>
   <ItemGroup>

@@ -143,27 +143,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BRDF.frag" />
-    <None Include="cubemapConvolution.frag" />
-    <None Include="fragmentShader.frag" />
-    <None Include="gaussianBlur.frag" />
-    <None Include="gaussianBlur.vert" />
-    <None Include="geometryShader.geom" />
-    <None Include="lightShader.frag" />
-    <None Include="lightShader.vert" />
-    <None Include="newSkybox.frag" />
-    <None Include="newSkybox.vert" />
-    <None Include="PBR.frag" />
-    <None Include="preFilter.frag" />
-    <None Include="screenSpaceShader.frag" />
-    <None Include="screenSpaceShader.vert" />
-    <None Include="shadowMap.frag" />
-    <None Include="shadowMap.geom" />
-    <None Include="shadowMap.vert" />
-    <None Include="skybox.frag" />
-    <None Include="skybox.vert" />
-    <None Include="vertexShader.vert" />
-    <None Include="visibleNormals.frag" />
-    <None Include="visibleNormals.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
