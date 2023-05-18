@@ -198,40 +198,45 @@ unsigned int pingpongBuffers[2];
 mat4 captureProjection;
 vector<mat4> captureViews;
 bool horizontal;
+float cachedTime;
+float delay = 1.f; //Time to delay for
 
 //Extraction functions
 /* Call constructors for all shaders */
 void SetupShaders();
 //Setup Textures and load models that will be rendered
 void SetupModels();
-
+/* Setup and bind window meshes to VAO*/
 void GenerateWindowVAO();
 void SetupBlendedWindows();
+
 /* Multisampled framebuffer for anti-aliasing*/
 void GenerateMultisampledFramebuffer();
 /* Convert Multisampled framebuffer to normal texture*/
 void MultisampleToNormalFramebuffer();
 /* Map incoming skybox textures to cubemap. Currently unused*/
 void AssignSkyboxToCubeMap();
-
+/* Allocate Uniform Buffer For view and projection matrices*/
 void ReserveUniformBuffer();
 void BindShadersToUniformBuffer();
-
+/* Generate depth map framebuffer and store it inside a texture*/
 void GenerateShadowMapFramebuffer();
-
+/* Set up ping-pong to blur image in two directions*/
 void SetupGuassianBlurFramebuffers();
-
+/* Use a framebuffer to convert an incoming texture into a cubemap texture using trigonometry*/
 void HDRItoCubemap();
-
+/* Convert cubemap to a blur of colours which is then used to alter the base colour of a meshes fragment */
 void SetupIrradianceMap();
-
+/* Create lower resolution versions of the cubemap to be used with different incoming roughness values*/
 void MipMapSkybox();
-
+/* pre-filter the environment map to save on performance*/
 void BRDFScene();
-
+/* Slightly adjust the colour of a fragment in alternating directions for a given number of times*/
 void GuassianBlurImplementation();
-
+/* Render the scene and store the depth values in the shadow map framebuffer*/
 void fillShadowBuffer(mat4 lightViewMatrix, Model* backpack);
+/* Calculate and log the frames per second and frametime*/
+void CalculatePerformanceMetrics();
 
 int main() {
 
@@ -251,10 +256,8 @@ int main() {
 	SetupShaders();
 	
 	Shader currentShader("shaders/vertexShader.vert", "shaders/fragmentShader.frag");
-	//temp FPS calc
-	float time = 1.f; //Time to delay for
 
-	float cachedTime = glfwGetTime(); //Holds time of previous frame
+	cachedTime = glfwGetTime(); //Holds time of previous frame
 
 	//Hide cursor and capture it inside the window
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -422,29 +425,7 @@ int main() {
 		screenSpaceShader->setFloat("exposure", 1.0); //HDR exposure
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		//temp looping timer
-		float now = glfwGetTime(); //Get time of current frame
-		float delta = now - cachedTime; //difference between current and previous frame
-		cachedTime = now; //Update cachedTime to hold new time
-
-		//calculate frametime
-		if (delta > frameTime) //Set frametime to the highest value
-		{
-			frameTime = delta;
-			frameTime *= 1000; //Multiply by 1000 so we get the frametime in a much easir to read format
-		}
-
-		fps++;
-		time -= delta; //subtract difference from specified time
-		if (time <= 0.f) //Have we used up the alloted time
-		{
-			cout << fps << " fps" << endl;
-			cout << "Frametime: " << frameTime << "ms" << endl;
-			fps = 0; //Reset FPS counter
-			time = 1; //Reset timer
-			frameTime = 0; //Reset framtime
-
-		}
+		CalculatePerformanceMetrics();
 
 		glfwSwapBuffers(window); //Swap to the front/back buffer once the buffer has finished rendering
 		glfwPollEvents(); //Check if any user events have been triggered
@@ -1504,6 +1485,33 @@ void fillShadowBuffer(mat4 lightViewMatrix, Model* backpack)
 	display(*shadowMapShader, *backpack);
 
 	glViewport(0, 0, VIEWPORTWIDTH, VIEWPORTHEIGHT); //Reset viewport size
+}
+
+void CalculatePerformanceMetrics()
+{
+	//temp looping timer
+	float now = glfwGetTime(); //Get time of current frame
+	float delta = now - cachedTime; //difference between current and previous frame
+	cachedTime = now; //Update cachedTime to hold new time
+
+	//calculate frametime
+	if (delta > frameTime) //Set frametime to the highest value
+	{
+		frameTime = delta;
+		frameTime *= 1000; //Multiply by 1000 so we get the frametime in a much easir to read format
+	}
+
+	fps++;
+	delay -= delta; //subtract difference from specified time
+	if (delay <= 0.f) //Have we used up the alloted time
+	{
+		cout << fps << " fps" << endl;
+		cout << "Frametime: " << frameTime << "ms" << endl;
+		fps = 0; //Reset FPS counter
+		delay = 1; //Reset timer
+		frameTime = 0; //Reset framtime
+
+	}
 }
 
 void mouseCallback(GLFWwindow* window, double xPosition, double yPosition)
