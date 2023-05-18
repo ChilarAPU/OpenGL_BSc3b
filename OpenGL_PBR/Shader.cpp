@@ -144,9 +144,22 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 	ReadSourceFile(vertexCode, fragmentCode, geometryCode, vertexPath, fragmentPath, geometryPath);
 }
 
+Shader::Shader()
+{
+
+}
+
 void Shader::use()
 {
 	glUseProgram(ID);
+}
+
+void Shader::LoadShader(const char* vertexPath, const char* fragmentPath, const char* geometryPath)
+{
+	string vertexCode;
+	string fragmentCode;
+	string geometryCode;
+	ReadSourceFile(vertexCode, fragmentCode, geometryCode, vertexPath, fragmentPath, geometryPath);
 }
 
 void Shader::setBool(const string& name, bool value) const

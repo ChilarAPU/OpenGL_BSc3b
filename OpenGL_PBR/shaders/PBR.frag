@@ -25,7 +25,6 @@ struct Material
 	sampler2D metallic;
 	sampler2D normal;
 	sampler2D ao;
-	float shininess;
 };
 
 uniform Material material;

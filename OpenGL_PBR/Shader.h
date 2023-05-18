@@ -21,11 +21,14 @@ private:
 public:
 	unsigned int ID;
 
-	//Default constructor 
 	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
+	//Default constructor 
+	Shader();
 
 	//Use/activate this shader class
 	void use();
+
+	void LoadShader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
 
 	//uniform query functions
 	void setBool(const string& name, bool value) const;

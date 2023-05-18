@@ -54,152 +54,87 @@ vec3 pointLightColorss[] = {
 	vec3(1.0f,  0.0f, 1.0f)
 };
 
-float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
-	/// positions   // texCoords
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		-1.0f, -1.0f,  0.0f, 0.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
+// Vertex Array Objects for easy to access models
+unsigned int cubeVAO; //3D cube vertices and texture coords
+unsigned int vegetationVAO; //2D Square vertices and texture coords
+unsigned int screenQuadVAO; //2D Square vertices that hold the final output
+unsigned int skyboxVAO; // 3D cube vertices without texture coords
 
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-		 1.0f,  1.0f,  1.0f, 1.0f
-};
-
-float skyboxVertices[] = {
-	// positions          
-	-1.0f,  1.0f, -1.0f,
-	-1.0f, -1.0f, -1.0f,
-	 1.0f, -1.0f, -1.0f,
-	 1.0f, -1.0f, -1.0f,
-	 1.0f,  1.0f, -1.0f,
-	-1.0f,  1.0f, -1.0f,
-
-	-1.0f, -1.0f,  1.0f,
-	-1.0f, -1.0f, -1.0f,
-	-1.0f,  1.0f, -1.0f,
-	-1.0f,  1.0f, -1.0f,
-	-1.0f,  1.0f,  1.0f,
-	-1.0f, -1.0f,  1.0f,
-
-	 1.0f, -1.0f, -1.0f,
-	 1.0f, -1.0f,  1.0f,
-	 1.0f,  1.0f,  1.0f,
-	 1.0f,  1.0f,  1.0f,
-	 1.0f,  1.0f, -1.0f,
-	 1.0f, -1.0f, -1.0f,
-
-	-1.0f, -1.0f,  1.0f,
-	-1.0f,  1.0f,  1.0f,
-	 1.0f,  1.0f,  1.0f,
-	 1.0f,  1.0f,  1.0f,
-	 1.0f, -1.0f,  1.0f,
-	-1.0f, -1.0f,  1.0f,
-
-	-1.0f,  1.0f, -1.0f,
-	 1.0f,  1.0f, -1.0f,
-	 1.0f,  1.0f,  1.0f,
-	 1.0f,  1.0f,  1.0f,
-	-1.0f,  1.0f,  1.0f,
-	-1.0f,  1.0f, -1.0f,
-
-
-	-1.0f, -1.0f, -1.0f,
-	-1.0f, -1.0f,  1.0f,
-	 1.0f, -1.0f, -1.0f,
-	 1.0f, -1.0f, -1.0f,
-	-1.0f, -1.0f,  1.0f,
-	 1.0f, -1.0f,  1.0f
-};
-
-//temporary place for buffer objects
-unsigned int VAO;
-unsigned int lightVAO;
-unsigned int vegetationVAO;
-unsigned int screenQuadVAO;
-unsigned int skyboxVAO;
-unsigned int textureColorbuffer;
-unsigned int rbo;
+unsigned int textureColorbuffer; //Multi-sampled texture render buffer
+unsigned int rbo; //Multi-sampled render buffer
 unsigned int uboMatrices; //Holds matrices that are not changed througout the program
-unique_ptr<Texture> cubeDiffuse(new Texture());
-unique_ptr<Texture> cubeSpecular(new Texture());
-unique_ptr<Texture> cubeEmissive(new Texture());
-unique_ptr<Texture> grassTexture(new Texture());
 
-unsigned int cubemapTexture;
+unique_ptr<Texture> grassTexture(new Texture()); //Holds texture for the window
 
-Model* windowModel = new Model();
+unsigned int cubemapTexture; //Holds pre-mapped cubemap
 
-Model* floorModel = new Model();
+//Model pointers
+unique_ptr<Model> windowModel(new Model());
+unique_ptr<Model> floorModel(new Model());
+unique_ptr<Model> swordModel(new Model());
+unique_ptr<Model> carModel(new Model());
+unique_ptr<Model> samuraiSwordModel(new Model());
 
-Model* swordModel = new Model();
-
-Model* carModel = new Model();
-
-unsigned int fps;
-float frameTime = 0;
-
-//temp camera
-vec3 cameraUp = vec3(0.0, 1.0, 0.0);
-
+//Used with performance metrics
 float deltaTime = 0.0f; //Time between current and last frame;
 float lastFrame = 0.0f; //Time of last frame
 
+//pointer to camera class
 Camera* camera = new Camera(vec3(0.0, 0.0, 3.0), 45.f);
 
-Shader* lightShader;
+//Used with performance metrics
+unsigned int fps = 0;
+float frameTime = 0;
+float cachedTime;
+float delay = 1.f; //Time to delay for
 
-Shader* skyboxShader;
-
-Shader* normalFaceShader;
-
-Shader* shadowMapShader;
-
-Shader* blurShader;
-
-Shader* PBRShader;
-
-Shader* newSkyboxShader;
-
-Shader* convolutionShader;
-
-Shader* filterShader;
-
-Shader* BRDFshader;
+//Shader class pointers
+unique_ptr<Shader> PBRShader(new Shader());
+unique_ptr<Shader> blurShader(new Shader());
+unique_ptr<Shader> lightShader(new Shader());
+unique_ptr<Shader> skyboxShader(new Shader());
+unique_ptr<Shader> normalFaceShader(new Shader());
+unique_ptr<Shader> newSkyboxShader(new Shader());
+unique_ptr<Shader> convolutionShader(new Shader());
+unique_ptr<Shader> filterShader(new Shader());
+unique_ptr<Shader> BRDFshader(new Shader());
+unique_ptr<Shader> shadowMapShader(new Shader());
+unique_ptr<Shader> screenSpaceShader(new Shader());
 
 map<float, vec3> sortedWindows; //Holds a sorted map of window positions so that they can be drawn in the correct order
 
+//Framebuffers to convert multi-sample into single-sample
 unsigned int framebuffer; //custom framebuffer delcaration
 unsigned int intermediateFramebuffer; //custom framebuffer delcaration
 
 unsigned int shadowMapFB; //shadow map framebuffer
 
-Shader* screenSpaceShader;
+unsigned int colorBuffer; //Normal output texture that gets passed to screen space quad
 
-unsigned int colorBuffer;
+unsigned int depthCubemap; //Holds highest depth map values for shadow
 
-unsigned int depthCubemap;
-
-unsigned int HDRIMap;
+unsigned int HDRIMap;  //Complete incoming texture before cubemapping
 
 unsigned int captureFBO, captureRBO; //Frambuffers for converting HDRI to cubemap
-unsigned int envCubemap;
-unsigned int irradianceMap;
+unsigned int envCubemap; //Holds the converted HDRI into cubemap
+unsigned int irradianceMap; //Holds a blurred version of the cubemap 
 
-unsigned int prefilterMap;
-unsigned int BRDFLUTtexture;
-unsigned int bloomTexture;
-unsigned int matrices_index;
-vector<mat4> shadowTransforms;
+unsigned int prefilterMap; //Mip-Mapped cubemap for varying roughness values
+unsigned int BRDFLUTtexture; //bidirectional reflectance distribution function which defined how light is reflected 
+unsigned int bloomTexture; //Holds fragments which pass the bloom gate check
+//Shadows
+vector<mat4> shadowTransforms; //Holds direction vectors for each side of a point light 
 const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024; //Resolution of the shadow map
+//Cloest and furthest distance for shadows
 float near = 1.0f;
 float far = 25.f;
+//Buffers for Guassian Blur implementation
 unsigned int pingpongFBO[2];
 unsigned int pingpongBuffers[2];
-mat4 captureProjection;
-vector<mat4> captureViews;
-bool horizontal;
-float cachedTime;
-float delay = 1.f; //Time to delay for
+
+mat4 captureProjection; //Dictates the FOV of each cubemap face
+vector<mat4> captureViews; //Holds direction vectors for each face of a cubemap
+bool horizontal; //Whether Guassian Blur is moving vertically or horizontally
 
 //Extraction functions
 /* Call constructors for all shaders */
@@ -248,14 +183,9 @@ int main() {
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	//Bind Main Object cube to VAO
-	bindCubeToVAO(VAO);
-
-	//Bind cube data to new buffer for light
-	bindCubeToVAO(lightVAO);
+	bindCubeToVAO(cubeVAO);
 
 	SetupShaders();
-	
-	Shader currentShader("shaders/vertexShader.vert", "shaders/fragmentShader.frag");
 
 	cachedTime = glfwGetTime(); //Holds time of previous frame
 
@@ -266,16 +196,6 @@ int main() {
 
 	//Scroll wheel callback
 	glfwSetScrollCallback(window, scrollCallback);
-
-	//instanciate model class
-	Model* backpack = new Model();
-	//load model textures
-	backpack->setDiffuseDirectory("../textures/swordTextures/Albedo.png");
-	backpack->setRoughnessDirectory("../textures/swordTextures/Roughness.png");
-	backpack->setMetallicDirectory("../textures/swordTextures/Metallic.png");
-	backpack->setNormalDirectory("../textures/swordTextures/Normal.png");
-	//load model into buffers
-	backpack->loadModel("../textures/Katana_export.fbx");
 
 	SetupModels();
 
@@ -292,15 +212,8 @@ int main() {
 	AssignSkyboxToCubeMap();
 
 	//Assign created skybox to skybox shader
-	skyboxShader = new Shader("shaders/skybox.vert", "shaders/skybox.frag");
 	skyboxShader->use();
 	skyboxShader->setInt("skybox", 0);
-
-
-	//Bind shader block to a specific slot inside OpenGL's binding points
-	//currentShader.use();
-	//matrices_index = glGetUniformBlockIndex(currentShader.ID, "Matrices");
-	//glUniformBlockBinding(currentShader.ID, matrices_index, 0);
 
 	ReserveUniformBuffer();
 
@@ -375,7 +288,7 @@ int main() {
 		glEnable(GL_CULL_FACE); //enable face culling
 		glCullFace(GL_FRONT); //Cull front faces
 
-		fillShadowBuffer(lightViewMatrix, backpack);
+		fillShadowBuffer(lightViewMatrix, samuraiSwordModel.get());
 		
 		//draw scene into offscreen frame buffer
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -394,7 +307,7 @@ int main() {
 		glActiveTexture(GL_TEXTURE6);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 		PBRShader->setInt("shadowMapCube", 6);
-		display(*PBRShader, *backpack);
+		display(*PBRShader, *samuraiSwordModel);
 
 		//Blit multisampled frameburffer to default framebuffer seperating the colour attachments
 		/* GL_COLOR_ATTACHMENT0 holds the normal output whereas GL_COLOR_ATTACHMENT1 holds fragments above a certain threshold for bloom*/
@@ -486,8 +399,6 @@ void display(Shader shaderToUse, Model m)
 	//Adjust uniform color value over time
 	float systemTime = glfwGetTime();
 	float greenValue = (sin(systemTime) / 2.0f) + 0.5f;
-	//int vertexColorLocation = glGetUniformLocation(currentShader, "newColor");
-	//currentShader.setFloat("newColor", greenValue);
 
 	mat4 view = mat4(1.0);
 	mat4 projection = mat4(1.0);
@@ -502,21 +413,13 @@ void display(Shader shaderToUse, Model m)
 	shaderToUse.use();
 	shaderToUse.setBool("bIsTransparent", false);
 	//glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
-	glBindVertexArray(VAO);
+	glBindVertexArray(cubeVAO);
 
 	for (int i = 0; i < 4; i++)
 	{
 		shaderToUse.setVec3("lightPositions[" + to_string(i) + "]", pointLightPositions[i]);
 		shaderToUse.setVec3("lightColors[" + to_string(i) + "]", pointLightColorss[i]);
 	}
-
-	//pass through view and projection matrix to shader
-
-	//Position of the light source
-	vec3 lightPos(1.2f, 1.0f, 2.0f);
-	//Move light source around a circle with a radius of 3 and a speed of 1
-	//lightPos.x = cos(1.0 * glfwGetTime()) * 3.f;
-	//lightPos.z = sin(1.0 * glfwGetTime()) * 3.f;
 
 	//adjust light colour over time
 	vec3 lightColor = vec3(1.0, 1.0, 1.0);
@@ -528,43 +431,6 @@ void display(Shader shaderToUse, Model m)
 	vec3 ambientColor = diffuseColor * vec3(0.7f);
 
 	shaderToUse.setVec3("viewPos", camera->GetPosition());
-
-	//Set Material struct uniforms
-	shaderToUse.setFloat("material.shininess", 64.0f);
-	//Assign relevant texture unit to sampler
-	//shaderToUse.setInt("material.diffuse", 0);
-	shaderToUse.setInt("material.specular", 1);
-	shaderToUse.setInt("material.emissive", 2);
-
-	//Directional Light
-	shaderToUse.setVec3("dirLight.direction", vec3(0.7f, 0.2f, 2.0f));
-	shaderToUse.setVec3("dirLight.ambient", ambientColor);
-	shaderToUse.setVec3("dirLight.diffuse", diffuseColor);
-	shaderToUse.setVec3("dirLight.specular", lightColor);
-
-	//Pass through light values for point lights
-	for (int i = 0; i < 4; i++)
-	{
-		//First part of struct uniform 
-		string t = "pointLights[";
-		t += to_string(i);
-
-		shaderToUse.setVec3(t + "].position", pointLightPositions[i]);
-		shaderToUse.setVec3(t + "].diffuse", pointLightColorss[i] * vec3(0.5));
-		shaderToUse.setVec3(t + "].ambient", pointLightColorss[i] * vec3(0.1));
-		shaderToUse.setVec3(t + "].specular", pointLightColorss[i]);
-		shaderToUse.setFloat(t + "].constant", 1.0f);
-		shaderToUse.setFloat(t + "].linear", 0.09f);
-		shaderToUse.setFloat(t + "].quadratic", 0.032f);
-	}
-
-	shaderToUse.setVec3("spotLight.position", camera->GetPosition());
-	shaderToUse.setVec3("spotLight.direction", camera->GetForwardVector());
-	shaderToUse.setFloat("spotLight.cutOff", cos(radians(12.5f)));
-	shaderToUse.setFloat("spotLight.outerCutOff", cos(radians(17.5f)));
-	shaderToUse.setVec3("spotLight.ambient", vec3(1.0f));
-	shaderToUse.setVec3("spotLight.diffuse", vec3(1.0f));
-	shaderToUse.setVec3("spotLight.specular", vec3(1.0f));
 
 	//Draw sword
 	mat4 model = mat4(1.0);
@@ -594,7 +460,8 @@ void display(Shader shaderToUse, Model m)
 	floorModel->Draw(shaderToUse, -1, true);
 
 	//Draw sword again but this time with the geometry normal shader
-	/*normalFaceShader->use();
+	/*
+	normalFaceShader->use();
 	model = mat4(1.0);
 	model = scale(model, vec3(3.0, 3.0, 3.0));
 	model = rotate(model, (float)radians(90.f), vec3(1.0f, 0.0, 0.0));
@@ -624,7 +491,7 @@ void display(Shader shaderToUse, Model m)
 		//Set colour of the light object
 		lightShader->setVec3("lightColor", pointLightColorss[i]);
 		//call VAO that holds the buffer and draw it to the screen
-		glBindVertexArray(lightVAO);
+		glBindVertexArray(cubeVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		//Draw scaled cube around object to act as an outline but not writing these to the stencil buffer
@@ -638,7 +505,7 @@ void display(Shader shaderToUse, Model m)
 		lightShader->setMat4("model", model);
 		lightShader->use();
 		//Draw cube
-		glBindVertexArray(lightVAO);
+		glBindVertexArray(cubeVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		glStencilMask(0xFF);
@@ -646,41 +513,8 @@ void display(Shader shaderToUse, Model m)
 		glEnable(GL_DEPTH_TEST);
 	}
 
-	//load multiple transparent grass
-	/*shaderToUse.use();
-	glBindVertexArray(vegetationVAO);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, grassTexture->GetID());
-	shaderToUse.setInt("grassTexture", 0);
-	shaderToUse.setBool("bIsTransparent", true);
-	//Loop through window position in the reverse order so that the furthest away windows are always drawn first
-	for (map<float, vec3>::reverse_iterator it = sortedWindows.rbegin(); it != sortedWindows.rend(); ++it)
-	{
-		model = mat4(1.0f);
-		model = translate(model, it->second);
-		shaderToUse.setMat4("model", model);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		//This fixes the problem of windows not accounting for other windows that are behind them
-	}
-	shaderToUse.setBool("bIsTransparent", false);
-	*/
 
-
-	//Draw skybox last
-	//Disable culling otherwise skyboxVAO is automatically removed
-	glDisable(GL_CULL_FACE);
-	//glDepthMask(GL_FALSE);
-	/*skyboxShader->use();
-	//Remove translation from the view matrix 
-	mat4 skyboxView = mat4(mat3(view));
-	skyboxShader->setMat4("view", skyboxView);
-	//Draw skybox cube
-	glBindVertexArray(skyboxVAO);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-	glBindTexture(GL_TEXTURE_2D, HDRIMap);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glDepthMask(GL_TRUE);
-	*/
+	//Draw skybox as late as possible to minimize repeated calls
 	newSkyboxShader->use();
 	mat4 skyboxView = mat4(mat3(view));
 	newSkyboxShader->setMat4("view", skyboxView);
@@ -689,7 +523,7 @@ void display(Shader shaderToUse, Model m)
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthMask(GL_TRUE);
 
-	//This fixes the skybox transparency issue but still results in overlapping skybox wasting
+	//This fixes the skybox transparency issue but still results in repeated calls with the skybox
 	//load multiple transparent grass
 	shaderToUse.use();
 	glBindVertexArray(vegetationVAO);
@@ -700,13 +534,14 @@ void display(Shader shaderToUse, Model m)
 	//Loop through window position in the reverse order so that the furthest away windows are always drawn first
 	for (map<float, vec3>::reverse_iterator it = sortedWindows.rbegin(); it != sortedWindows.rend(); ++it)
 	{
+		//This currently only works during loading, as the vector is never re-sorted during runtime, resulting in windows 
+		//being in the wrong order once the player starts moving
 		model = mat4(1.0f);
 		model = translate(model, it->second);
 		shaderToUse.setMat4("model", model);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		//This fixes the problem of windows not accounting for other windows that are behind them
 	}
-
 	shaderToUse.setBool("bIsTransparent", false);
 }
 
@@ -762,21 +597,10 @@ void bindCubeToVAO(unsigned int& vao)
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao); //Bind VAO to store any subsequent VBO & EBO calls
 
-	//Basic EBO for indices
-	/*unsigned int EBO;
-	glGenBuffers(1, &EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	*/
-
 	//Basic VBO Setup for vertices
 	unsigned int VBO;
 	glGenBuffers(1, &VBO); //Create a single buffer for the VBO
 	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Bind Buffer to GL_ARRAY_BUFFER type
-	/*glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); //allocate memory and copy vertices to buffer
-	//How are the vertices stored
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	*/
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Cubevertices), Cubevertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -808,28 +632,29 @@ void scrollCallback(GLFWwindow* window, double xOffset, double yOffset)
 void SetupShaders()
 {
 	//Bind light shader
-	lightShader = new Shader("shaders/lightShader.vert", "shaders/lightShader.frag");
+	lightShader->LoadShader("shaders/lightShader.vert", "shaders/lightShader.frag");
 
-	screenSpaceShader = new Shader("shaders/screenSpaceShader.vert", "shaders/screenSpaceShader.frag");
+	screenSpaceShader->LoadShader("shaders/screenSpaceShader.vert", "shaders/screenSpaceShader.frag");
 
-	normalFaceShader = new Shader("shaders/visibleNormals.vert", "shaders/visibleNormals.frag", "shaders/geometryShader.geom");
+	normalFaceShader->LoadShader("shaders/visibleNormals.vert", "shaders/visibleNormals.frag", "shaders/geometryShader.geom");
 
-	shadowMapShader = new Shader("shaders/shadowMap.vert", "shaders/shadowMap.frag", "shaders/shadowMap.geom");
+	shadowMapShader->LoadShader("shaders/shadowMap.vert", "shaders/shadowMap.frag", "shaders/shadowMap.geom");
 
-	blurShader = new Shader("shaders/gaussianBlur.vert", "shaders/gaussianBlur.frag");
+	blurShader->LoadShader("shaders/gaussianBlur.vert", "shaders/gaussianBlur.frag");
 
-	PBRShader = new Shader("shaders/vertexShader.vert", "shaders/PBR.frag");
+	PBRShader->LoadShader("shaders/vertexShader.vert", "shaders/PBR.frag");
 
 	loadHDRI("../textures/construction.hdr");
 
-	newSkyboxShader = new Shader("shaders/newSkybox.vert", "shaders/newSkybox.frag");
+	newSkyboxShader->LoadShader("shaders/newSkybox.vert", "shaders/newSkybox.frag");
 
-	convolutionShader = new Shader("shaders/newSkybox.vert", "shaders/cubemapConvolution.frag");
+	convolutionShader->LoadShader("shaders/newSkybox.vert", "shaders/cubemapConvolution.frag");
 
-	filterShader = new Shader("shaders/newSkybox.vert", "shaders/preFilter.frag");
+	filterShader->LoadShader("shaders/newSkybox.vert", "shaders/preFilter.frag");
 
-	BRDFshader = new Shader("shaders/gaussianBlur.vert", "shaders/BRDF.frag");
+	BRDFshader->LoadShader("shaders/gaussianBlur.vert", "shaders/BRDF.frag");
 
+	skyboxShader->LoadShader("shaders/skybox.vert", "shaders/skybox.frag");
 }
 
 void SetupModels()
@@ -851,6 +676,14 @@ void SetupModels()
 	carModel->setAODirectory("../textures/carTextures/Vehicle_ao.png");
 	carModel->setEmissiveDirectory("../textures/carTextures/Vehicle_emissive.png");
 	carModel->loadModel("../textures/cybercar.fbx");
+
+	//load model textures
+	samuraiSwordModel->setDiffuseDirectory("../textures/swordTextures/Albedo.png");
+	samuraiSwordModel->setRoughnessDirectory("../textures/swordTextures/Roughness.png");
+	samuraiSwordModel->setMetallicDirectory("../textures/swordTextures/Metallic.png");
+	samuraiSwordModel->setNormalDirectory("../textures/swordTextures/Normal.png");
+	//load model into buffers
+	samuraiSwordModel->loadModel("../textures/Katana_export.fbx");
 }
 
 void SetupBlendedWindows()
@@ -910,6 +743,16 @@ void SetupBlendedWindows()
 
 void GenerateWindowVAO()
 {
+	float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+		/// positions   // texCoords
+			-1.0f,  1.0f,  0.0f, 1.0f,
+			-1.0f, -1.0f,  0.0f, 0.0f,
+			 1.0f, -1.0f,  1.0f, 0.0f,
+
+			-1.0f,  1.0f,  0.0f, 1.0f,
+			 1.0f, -1.0f,  1.0f, 0.0f,
+			 1.0f,  1.0f,  1.0f, 1.0f
+	};
 	//Generate VAO for screen space quad
 	unsigned int quadVBO;
 	glGenVertexArrays(1, &screenQuadVAO);
@@ -937,14 +780,8 @@ void GenerateMultisampledFramebuffer()
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, textureColorbuffer);
 
 	//allocate memory for texture but do not fill it. Also set texture to size of viewport
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, VIEWPORTWIDTH, VIEWPORTHEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 	//Using floating point lighitng values to exceed the LDR range
 	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA16F, VIEWPORTWIDTH, VIEWPORTHEIGHT, GL_TRUE);
-
-	//glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	//attach color attachment to framebuffer from texture
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureColorbuffer, 0);
@@ -953,27 +790,16 @@ void GenerateMultisampledFramebuffer()
 	glGenTextures(1, &bloomMTexture);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, bloomMTexture);
 	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA16F, VIEWPORTWIDTH, VIEWPORTHEIGHT, GL_TRUE);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D_MULTISAMPLE, bloomMTexture, 0);
 
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
 
-	//glDrawBuffer(GL_COLOR_ATTACHMENT0);
-	//glReadBuffer(GL_COLOR_ATTACHMENT0);
-
-	//glBindTexture(GL_TEXTURE_2D, 0);
-
 	//renderbuffer object attachment
-	//unsigned int rbo;
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 
 	//create depth and stencil renderbuffer object
-	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, VIEWPORTWIDTH, VIEWPORTHEIGHT);
 
 	//Create render buffer with multisampling set to 4
 	glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, VIEWPORTWIDTH, VIEWPORTHEIGHT);
@@ -1035,6 +861,53 @@ void MultisampleToNormalFramebuffer()
 
 void AssignSkyboxToCubeMap()
 {
+
+	float skyboxVertices[] = {
+		// positions          
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		-1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f
+	};
+
 	//Create vector of cubemap locations in the order that OpenGL uses
 	vector<string> textures_faces;
 	textures_faces.push_back("../textures/anime-skybox/right.png");
@@ -1132,7 +1005,6 @@ void ReserveUniformBuffer()
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	//Bind uniform buffer object to binding point 0
-	//glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboMatrices);
 	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(mat4));
 
 	//Insert data into buffer
@@ -1151,12 +1023,12 @@ void ReserveUniformBuffer()
 
 void BindShadersToUniformBuffer()
 {
+	unsigned int matrices_index = 0;
 	//Attach binding object to light and skybox shader
-	//lightShader
 	lightShader->use();
 	matrices_index = glGetUniformBlockIndex(lightShader->ID, "Matrices");
 	glUniformBlockBinding(lightShader->ID, matrices_index, 0);
-	//skyboxShader
+
 	skyboxShader->use();
 	matrices_index = glGetUniformBlockIndex(skyboxShader->ID, "Matrices");
 	glUniformBlockBinding(skyboxShader->ID, matrices_index, 0);
@@ -1165,7 +1037,6 @@ void BindShadersToUniformBuffer()
 	matrices_index = glGetUniformBlockIndex(normalFaceShader->ID, "Matrices");
 	glUniformBlockBinding(normalFaceShader->ID, matrices_index, 0);
 
-	//Give new shader access to projection binding
 	newSkyboxShader->use();
 	matrices_index = glGetUniformBlockIndex(newSkyboxShader->ID, "Matrices");
 	glUniformBlockBinding(newSkyboxShader->ID, matrices_index, 0);
